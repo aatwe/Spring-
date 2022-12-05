@@ -1,0 +1,525 @@
+Prerequisites:
+
+Softwares:
+
+1=>Eclipse/Netbeans/IntelliJ					//IDE
+
+2=>TomcatServer (Spring )						//Server	 
+
+3=>Mysql for database							//Database
+
+4=>Sqlyog , workbench or (phpmyadmin for mysql gui)	//Database access
+								 //used to store data in database
+
+
+
+
+a)Create maven project
+
+	Eclipse -> File -> Maven Project -> Maven Project -> maven-archetype-quickstart
+
+	groupid		: com.springcore
+	Artifact id	: springcore
+	Package		: com.springcore
+
+	=> Finish
+
+	//Maven project is configured	
+	//why maven project?Why not simple java application?
+		spring core and spring context .jar would have had to download.Avoided using maven project
+																	//only pom.xml dependencies needed
+
+
+//Maven Project Setup:
+
+ProjectWithMaven
+Servers
+springcore
+src/main/java
+   com.springcore
+	   App.java
+		App
+src/test/java
+   	
+>  JRE System Library [ESE-1.5]
+>  Maven Dependencies
+>  src
+>  target
+>  pom.xml			//project object model file
+				//this is where we will include external dependencies
+
+----------------------------------------------------------------------------------
+Code: App.java
+
+package com.springcore;
+
+public class App
+
+ public static void main( String[] args )
+{ 
+System.out.println( "Hello World!" );
+
+}
+
+---------------------------------------------------------------------------------
+
+b) Add Spring dependencies to Maven =>spring core , spring context
+
+	b.1) spring core maven google	//get spring core module dependency 
+
+		//4.3 //stable  //can use 5.2 also
+
+		Copy maven code
+
+	b.2) paste spring core dependency	in pom.xml
+		
+	
+		<dependencies>
+			<!—— httpp://mvnrepository.com/artifact/org.springframework/spring—core -->
+		<dependency>
+			<gr0upId>org.springframework</gr0upId>
+			<artifactId>spring-core</artifactId>
+			<version>5.2.3.RELEASE</version>
+		</dependency>
+
+	b.3) spring context maven google	//get spring context module dependency
+	
+		//should be same version
+		Copy maven code
+
+
+	b.4) Paste spring context dependency in pom.xml
+
+
+		<!—— https://mvnrepository.com/artifact/org.springframework/spring—context —-
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring~context</artifactld>
+			<version>5.2.3.RELEASE</version>
+		</dependency>
+		...
+
+
+	b.5) wait for dependencies to download
+
+	b.6)  How to check downloaded dependencies?
+			Maven Dependencies folder:
+				
+			spring-core-5.2.3.RELEASE.jar - C:
+			spring-i§-5.2.3.RELEASE.jar - C:\L
+			spring-c ntext-5.2.3.RELEASE.jar
+			spring—aop-5.2.3.RELEASE.jar - C:"
+			spring-beans-5.2.3.RELEASE.jar - l
+			spring-expression-5.2.3.RELEASE._
+			junit-3.8.1.jar - C:"|.Users"(Durgesh‘
+
+
+
+	b.7) If still facing error --> : spring core -> right click -> Maven -> Update Project
+
+
+	b.8) How to update JRE if needed?
+			springcore(project) -> right click -> properties	 -> Java Build path -> Remove JRE
+			-> Add Library -> JRE System Library -> Workspace Java14 -> Finish
+			//java 14 downloaded	
+     
+
+c) creating beans-java pojo
+
+	c.1)  bean is java class containing properties,getters and setters
+
+	c.2)  com.springcore -> Right click -> New -> Student.java		//Student bean 
+	
+	c.3) 	Student.java
+
+		public class Student {
+			private int studentId;
+			private String studentName;
+			private String studentAddress;
+				
+		}
+
+	c.4) generate getter and setter for bean
+
+		source ->  Generate Getters and Setters -> Select all -> generate
+
+		System.out.println("setting student id");
+		System.out.println("setting student name");
+		System.out.println("setting student address");
+
+	c.5) generate constructor for bean
+		
+		source -> Generate constructor using fields -> Generate
+
+	c.6) genereate default constructor
+
+		source -> generate constructor using superclass -> Generate
+
+	c.7) generate toString() 
+	
+		source -> generate toString()		//will print all reference variables when we print object
+
+		@Override
+		public String toString() {
+		return "Student [studentId=" + studentId + ", studentNamez" + studentName + ", studentAddress= "+ studentAddress"
+		+ "]";
+		}
+
+		------Bean created----------
+//try running : 
+	Hello World
+
+//How to use Student.java in App.java    //without using new Student()
+
+
+d) Tell Spring to create object, manage lifecycle so we can .get() it
+	create Spring configuration file=>config.xml
+
+
+	d.1) how to create Spring config(.xml) file?
+			
+	src/main/java -> Right click -> New -> other -> xml -> XML file --> next -> Name: config.xml
+
+
+
+	d.1.1) copy name space of from and add namespace of file
+		//spring 5 documentation pdf --> 
+
+//config.xml
+
+//What general structure of config file looks like:
+	What is namespace? //xmlns part = namespace
+
+<?xml versiona"l.0" encoding="UTF 8"?)
+	
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="..." class="...">
+
+<!—- collaborators and configuration for this been go here ——>
+</bean>
+{bean id="..." class="...">
+
+<!-- collaborators and configuration for this been go here ——>
+</bean>
+<!—- more bean definitions go here -->
+
+</beans>
+
+---------------------------------------------------------------------------
+	d.1.2) Declare student class in config file in 
+		<bean class= "com.springcore.Student" name= "student1"> 
+	
+
+	d.1.3) Create config file with metadata
+
+		setter injection: <property name=""></property>	
+		set properties studentId, studentName and studentAddress  in Student.java class with value 22344, gajju goju and bhugolganj
+		Q)What is this data? metadata 	
+	
+for ex
+		<property name= "studentId ">
+
+			<value>22344</value>
+		
+		 </property>
+
+Our code:
+
+
+
+<?xml versiona"l.0" encoding="UTF 8"?)
+	
+
+(PXml version="1.0" encoding="UTF—8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:Xsi="http://www.w3.org/zeel/XMLSchema—instance" xmlns:context="
+	http://www.springframework.org/schema/context"						//new added context	 
+	xmlns:p="http://www.springframework.org/schema/p"						//new added p schema
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/5chema/context/spring—context.xsd">
+	
+	<bean class= "com.springcore.Student" name= "student1">
+	
+		<property name= "studentId ">
+
+			<value>22344</value>
+		
+		 </property>
+		<property name= "studentName">
+
+			<value>Gajju goji</value>
+		
+		 </property>
+		<property name= "studentAddress">
+
+			<value>bhugolganj</value>
+		
+		 </property>
+		
+	</bean>
+
+</beans>
+
+
+		Q) IOC container will create ready made objects from this xml file
+
+
+e) Ask container to create object
+	setterIInjection
+	
+	e.1) Spring 5 documentation --> Instantiating a container
+		We will use Applicationcontext //class path
+	
+		
+		e.1.1) create container object,
+			 
+				we use classpathapplicationcontext type object context 		//What is context? container
+
+		e.1.2) pass input into container object: xml file(s)  {" ", " "}
+		
+Ex		
+	ApplicationContext context =
+		new ClassPathXmlApplicationContext(new String[] {"services.xml", "daos.xml"});
+
+
+
+	e.2) 
+
+		e.2.1) use .getBean("nameofbean");		
+			What output? Student object
+			typecast to Student class
+
+			Student student1 = (Student) context.getBean("student1");
+
+
+
+Code: App.java
+
+package com.springcore;
+
+public class App
+
+ 	public static void main( String[] args )
+{ 
+	System.out.println( "Hello World!" );
+	ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"config.xml"});
+	Student student1 = (Student) context.getBean("student1");
+}
+
+
+
+
+f) Check if object created: print the Student object student1
+
+package com.springcore;
+
+public class App
+
+ 	public static void main( String[] args )
+	{ 
+		System.out.println( "Hello World!" );
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"config.xml"});
+		Student student1 = (Student) context.getBean("student1");
+		System.out.println(student1);
+	}
+
+
+>OUTPUT:
+Hello World!
+Student [studentId=22344, studnetName="Gajju gajoa" , StudentAddress= "Bhugolganj"]
+
+
+//XML File values are output into program
+// WHAT Advantage? no object created in main()
+//object ccoming from? ioc container
+	What ioc container did?
+		1) created object from xml
+		2) supply object with ioc container object of type ApplicationContext
+		3) destroy the object before application finishes
+
+//Conclusion: Entire lifecycle of object managed by ioc container
+		
+
+Q) How printing student1 prints object details? toString() method specified in class
+
+Q) What if we remove toString() from Student class?
+
+>OUTPUT
+Hello World!
+com.springcore.Student@124c278f
+
+//hash code printed of object
+ 
+
+Q) How to confirm that object instantiated via setter in ioc container? Sysout something in setters
+
+Q) What main feature for us?
+If want to change value , no need to change code in app.java OR Student.java
+Just change in xml config file
+
+
+Note: What data types we passed? int,String etc //all primitives
+
+Q) How to insert collections/ reference types etc? next lesson
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+What ways to inject value?
+
+a) Earlier how we inserting value? value as an element
+
+<property name="studentId">
+	<value> 22344 </value>
+</property>
+
+
+Objective: 
+
+b) use value as an attribute
+//Create bean 1	
+
+<!-- this is our beans -->
+<bean class="com.springcore.Student" name="studentl">
+
+		<property name="studentId" value= "23424" />
+	
+		<property name= "studentName" value="Ram Singh" />
+
+		<property name= "studentAddress" value="Delhi" />
+
+	</bean>
+
+</beans>
+
+
+
+//Create bean 2
+
+<!-- this is our beans -->
+<bean class="com.springcore.Student" name="student2">
+
+		<property name="studentId" value= "23424" />
+	
+		<property name= "studentName" value="Shyam Singh" />
+
+		<property name= "studentAddress" value="Lucknow" />
+
+	</bean>
+
+</beans>
+
+
+package com.springcore;
+
+public class App
+
+ 	public static void main( String[] args )
+	{ 
+		System.out.println( "Hello World!" );
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"config.xml"});
+	
+		Student student1 = (Student) context.getBean("student1");
+		Student student1 = (Student)context.getBean("student2");
+		
+		System.out.println(student1);
+		System.out.println(student2);
+	}
+
+
+>Hello World!
+Setting student id
+
+setting student name
+
+setting student address
+
+Student [studentId=23424, studentName=Ram Singh , studentAddress = Delhi]
+
+//
+>Output
+Hello World!
+
+Setting student id
+
+setting student name
+
+setting student address
+
+Setting student id
+
+setting student name
+
+setting student address
+
+Student [studentId=23424, studentName=Ram singh, studentAddress=Delhi]
+Student [studentId=1341, studentName=Shyam Singh, studentAddress=Lucknow]
+
+
+Objective achieved:
+Setter injection with value as an attribute
+====================================================================================
+
+c) use p schema	 : b.1) remove all properties
+			   b.2) copy pschema name space
+						xmlns : p= "http ://www. springframework. org/schema/p "
+			   b.3) use p schema
+						P : propertyname : "property value" ....
+
+
+//Create bean 1	
+
+<!-- this is our 1st beans -->
+<bean class="com.springcore.Student" name="studentl" p:studentId= "24234" p:studentName="Ram Singh" p:studentAddress= "Delhi" />
+
+		
+<!-- this is our 2nd beans -->
+<bean class="com.springcore.Student" name="student2" p:studentId= "1341" p:studentName="Shyam Singh" p:studentAddress= "Lucknow" />
+	
+</beans>
+
+
+package com.springcore;
+
+public class App
+
+ 	public static void main( String[] args )
+	{ 
+		System.out.println( "Hello World!" );
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"config.xml"});
+	
+		Student student1 = (Student) context.getBean("student1");
+		Student student1 = (Student)context.getBean("student2");
+		
+		System.out.println(student1);
+		System.out.println(student2);
+	}
+
+
+//
+>Output
+Hello World!
+
+Setting student id
+
+setting student name
+
+setting student address
+
+Setting student id
+
+setting student name
+
+setting student address
+
+Student [studentId=23424, studentName=Ram singh, studentAddress=Delhi]
+Student [studentId=1341, studentName=Shyam Singh, studentAddress=Lucknow]
+
+Objective achieved:
+Setter injection using p schema

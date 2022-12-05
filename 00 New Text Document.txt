@@ -1,0 +1,4 @@
+https://www.youtube.com/results?search_query=java+spring
+
+
+PREREQUISITES: Core Java, jdbc, Hibernate, Servlet and JSP

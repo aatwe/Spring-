@@ -1,0 +1,144 @@
+a) Spring Factory Bean: 
+a.1) What is Spring ? a factory of beans
+
+--------------------------------------------------------
+Application Deployment:s
+
+For ex. Tomcat : Sevlet container
+
+A) 
+
+What is tomcat? container of servlets
+
+What Tomcat does? creates servlet objects
+		Why need servlet objects? to run application
+
+How to deploy application?
+
+1) Configure all servlet objects in xml
+2) Supply the classes
+
+
+What Tomcat does? 
+1) read xml
+2) find which servlet to instantiate from xml
+3) create those servlets
+--------------------------------------------------------
+B)
+
+What is Spring? container of beans
+
+POJO (Plain Old Java Object) can be inside a spring container
+
+Spring container
+  object1  object2 object3....
+
+What Spring container does? manages all Objects
+		instantiation,lifecycle,destruction
+
+Q) Can we have objects outside spring container ? yes
+but spring manages, so more advantages for inside ones 
+----------------------------------------------------------
+
+a.2) How Spring manages?
+
+have handle on object.
+
+How spring knows where objects are? Spring creates the objects itself
+
+
+
+a.3) How spring creates new objects? Factory pattern
+
+we know 1 way: new()  //NOT 
+
+Special Spring Code: Factory pattern
+
+a.4) How factory pattern?
+
+Given Object A
+Objective: Create another object B
+
+
+Call another object: Factory Object.
+
+How object factory creates object? reads from config file, data/meta data for all objects to create
+
+---------------------------------------------------------------------------------------------------
+
+b) Create Objects using Spring Bean factory:	
+b.1)	//wher Bean factory reads from?Spring XML //we supply this XML
+									//What xml contains? bean definitions
+										//What are bean definitions? blueprints for creating objects
+
+
+b.2) bean Factory output : Spring bean
+
+//What special about Spring bean object? Spring knows about it and has handle to it
+
+Conclusion: Spring is container for Spring Bean
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+HANDS ON:
+
+a) Create javapackage org.abhi.abhijb
+	Name : DrawingApp
+	Super class: java.lang.Object
+	method: public static void main(String[] args)
+		-> Finish
+
+
+WITHOUT SPRING
+----------------------------------------
+DrawingApp.java
+
+package org.abhi.abhijb;
+public class DrawingApp {
+
+public static void main(String[] args) {
+	Triangle triangle = new Triangle();		//triangle object created without spring
+	triangle.draw();
+  }
+}
+----------------------------------------
+Triangle.java
+
+public class Triangle {
+ 
+ public void draw() {
+	System.out.println("Triangle Drawn");
+	
+ }
+
+}
+----------------------------------------
+Output:
+> Triangle Drawn
++++++++++++++++++++++++++++++++++++++++++++
+WITH SPRING
+----------------------------------------
+DrawingApp.java
+
+package org.abhi.abhijb;
+public class DrawingApp {
+
+public static void main(String[] args) {
+	Branfactory factory = new XmlBeanFactory(new FileSystemResource("spring.xml"));		//Beanfactory configured by Xml file  //create instance of Xml Beanfactory why? so it can read xml file. What types of bean factories? many
+									//what arguments? resource
+	triangle.draw();
+  }
+}
+----------------------------------------
+Triangle.java
+
+public class Triangle {
+ 
+ public void draw() {
+	System.out.println("Triangle Drawn");
+	
+ }
+
+}
+----------------------------------------
+Output:
+> Triangle Drawn

@@ -1,0 +1,52 @@
+a) What is Spring IOC Container?
+
+	
+a.0) What role of Spring IOC Container?
+
+	Create objects
+	Hold Objects in memory
+	injects object from one class to another
+
+
+
+a.1) needs Input: Beans information		
+			  cOnfiguration information  (config file/ xml file)	//contains dependency info 
+ 				//how beans objects created
+
+
+a.2) Output : Ready to use objects, we will just .get() objects into our application
+
+a.2) What is your job?
+				write beans
+				wrtie config
+				main application
+
+
+---------------------------------------
+
+Bean factory depricated
+
+
+b) Application Context : Represents IOC container
+				What is it? Interface
+				How to instantiate interface ? create object of subclass		//why? Interface
+
+
+What Subclasses of Application Context?
+
+b.1) ClasspathXMLApplicationContext	//we use
+
+		What use case? searches for xml config from java class path
+
+b.2) AnnotationConfigApplicationContext
+
+		What use case? Searches for beans where annotation is used
+
+b.3) FiIeSystemXMLApplicationContext
+
+
+		What use case? Searches for xml config file from file system
+
+
+
+		

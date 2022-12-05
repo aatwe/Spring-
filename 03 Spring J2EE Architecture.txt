@@ -1,0 +1,54 @@
+What application layers?
+
+a.1) UI Layer			//ProductController	//java class	//accepts requests, send request to Product Service	
+	  |					|
+	  V					V
+a.2) Business Service Layer	//ProductService		//ProductDao dao = new ProductDao()
+						|
+						V
+a.3) Data Access Layer	//ProductDao
+						|
+						V	 
+a.4) Database			   //DB 
+	
+
+
+How Business Service Layer accesses Data Access layer? ProductDao dao = new ProductDao()
+
+What problem? tightly coupled	//NOT Recommended
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==
+
+Solution: Spring dependency injection
+
+
+Spring will create ProductDao object --> inject into Product Service --> inject into Product Controller
+
+
+How to specify what we want? Metadata/annotation/xml
+
+
+What else spring provides? modules/services/apis
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==
+
+Data Access Layer
+Ex of services/apis provided by spring? JDBC (Spring Data JDBC API)		//Data access layer
+	Function : contact Database
+
+Ex API to integerate Spring -- ORM frameworks()
+					ex ORM Frameworks :Hibernate,JPA,JDO,Oracle Toplink
+
+
+Business/Services Layer
+Spring Security : Authentication/Authorization
+Transaction Management
+
+
+Frontend:
+Ex Frameworks for Frontend	Strut/JSF/Spring MVC
+							--------
+							Spring Model View Controller
+
+
+
+	

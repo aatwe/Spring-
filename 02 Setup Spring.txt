@@ -1,0 +1,38 @@
+Objective; Setup dev envt for Spring
+
+a.1) Eclipse,
+	New -> Java Project : Spring Demo
+	 	JRE : Java SE:1.6
+		Finish
+
+>
+src
+JRE System Library[JavaSE-1.6]
+
+
+a.2) Create custom library	why?? putting Spring JARs
+						where JARs? dist folder
+
+a.2.1) Download Spring distribution : Current Release : 3.0.5
+a.2.2) SpringDemo -> right click -> properties ->Java Build Path -> Libraries
+													JRE System Library [JavaSE1.6]
+														Add Library -> user Library -> New
+														"Spring"
+
+a.2.3) Add JARs -> Browse -> dist folder in Spring folder
+							//Add all
+a.2.4) Download Apache comments	 
+		Add JARS -> Apache commons: commons-logging-1.1.1.jar
+
+	 Ok -> Finish
+
+
+Final view:
+
+Spring Demo
+  src
+  JRE System Library
+  Spring
+
+//Objective: Added Spring library to application
+		  can write code using Spring functionalities

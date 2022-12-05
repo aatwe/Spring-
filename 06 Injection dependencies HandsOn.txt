@@ -1,0 +1,136 @@
+a) Ex of 2 dependent classes
+
+class Student
+
+{
+int id;
+sumgname;
+Address address;
+
+}
+
+
+b) 
+
+class Address
+
+{
+String street;
+String city;
+String state;
+String country;
+
+}
+
+
+b) What Spring IOC container does? What is dependency injection
+
+b.1) creates Address class address object
+
+b.2) sets the Address class member variable values at runtime
+
+b.3) Creates Student class object
+	
+b.4) injects Student class member variables
+
+b.5) Inject address object in Address address at runtime automatically
+
+
+-----Once all dependencies injected at runtime------
+
+b.6) IOC Output: Student object
+
+ConclusiON: all dependency management and creation done by IOC container.
+
+
+
+c) how to do dependency injection? uses setter methods to initialize objects
+
+c.1) Using Setter Injection/Property injection
+
+setter methods called at runtime
+class Student
+{
+	id,name,address
+	set|d(id){}
+	setName(name){}
+	setAddress(address){}
+
+}
+
+class Address
+{
+	street,city,state,ccuntry
+
+	setStreet(street)
+	setEity(city)
+	setState(state)
+	setCountry(country)
+
+l
+
+c.2) using Constructor injection : Uses constructor to initialize objects
+						  constructor -> takes values from config file
+						  object created first, then constructor called
+Student object created
+address object created
+address constructor called
+Student constructor called
+
+					
+-------------
+class Student 
+
+{
+String id,name,address;
+Student(id,name,address)
+{
+}
+
+}
+
+class Address
+
+{
+String street,city,state,country:
+
+° Address(street,city,state,cuuntry)
+{
+}
+
+}
+
+
+
+How to specify c.1 or c.2? config file
+
+class names, properties, way: c.1 or c.2
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++===
+
+d) 
+d.1) What are config file? beans and dependencies declared (xml file)
+
+For ex Hibernate config file: specifies all settings for Hibernate 
+
+Spring: xml file
+
+
+What are beans? class provided to ioc container
+
+
+<beans>
+  <bean>
+
+</beans>
+	 
+
+d.2) supports what types of dependency injection?
+Primitive Type
+byte,short,char,int,float,double,long boolean 
+
+Collection Type
+List, Set, Map, Properties
+
+
+Reference Type
+Other class Object

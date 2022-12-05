@@ -1,0 +1,100 @@
+What types of Spring modules:
+
+
+A) Spring Core Module
+
+a.1) Core, beans
+---------------------------------
+IOC,Inversion of control
+
+
+
+a.2) Context extends beans
+--------------------------------
+extra features;
+resource loading
+event propogation
+internalization
+transperent creation of context 
+
+j2ee features:
+ejb
+jms
+basic remoting
+
+
+
+a.3) spEL
+---------------------------------
+Queries + manipulate Spring expression language
+What is Spring expession language?
+	Query and manipulate object graph at runtime
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+B) Other Spring Modules:
+	
+b.1) AOP	//AOP= aspect oeriented programming: Use case: 
+define method interceptor & define point cuts //helps to cleanly decouple code
+
+b.2) Aspect	
+
+b.3) Instrumentation	
+	provides class loader implementations in server applications 
+
+b.4) Messaging
+	used to create messaging applications
+	contains Useful Annotations for mapping messages to  methods
+
+
+
+
+
+
+C) Data Access/ Data Integeration modules	//Database related
+
+  c.1) JDBC
+	  dont have to use old JDBC(tedious code)
+	  provides JDBC abstraction layer . Clean API
+	  passes database vendor specific code	 
+	  helps to contact DB directly
+	  Its an API, works on normal JDBC
+
+  c.2) Spring ORM (Object relational mapping)
+	  Provides integeration layer.
+	  Use case: Can integerate different ORM tool like Spring Hibernate/JPA and use in our project
+
+  c.3) JMS
+	  Helps produce and consume messages
+
+  c.4) OXM (Object XML mapping)
+	  Provides abstraction layer supporting object XML mapping frameworks like JAXB,castor,Xstream
+
+
+
+D) Web Modules
+
+  d.1) Web  
+
+  d.2) Servlets
+
+  d.3) Portlets
+
+  d.4) Websocket
+
+//Features like:  Upload file to server,REST API, HTTP Client.
+
+
+
+E) TEST
+
+  e.1) JUnit
+
+  e.2) TestNg
+
+	 helps unit testing/ integeration testing features
+
+	 provides mock objects: for testing code in isolation //project not affected
+  
+  

@@ -1,0 +1,234 @@
+0) Why Spring framework? decouple relationship between dependent object 
+   What is dependency injection? separate the depended class
+						this dependent class will receive what objects it is dependent on(dependencies))
+																										
+								
+
+
+a) Given: 2 classes circle and Triangle
+				draw()	draw()
+
+b) How to instantiate these 2 in class Application?
+
+
+Triangle
+Triangle myTriangle = new Triangle(g;
+myTriangle.draw();
+
+Circle myCircle = new Circle();
+myCircle.draw();
+
+
+c) How to untie application class from these objects? polymorphism
+ 
+How to execute polymorphism? 
+	use parent class to execute these methods of class
+	At runtime, give child classes and methods 
+
+
+Ex	//REFRESHER TO POLyMORPHISM
+
+c.1) Create a Shape interface/abstract class (Parent class) with draw method
+
+c.2) Circle and Triangle will extend Shape
+
+c.3) Override draw() from Shape class in both Circle class and Triangle class with each different implementations
+
+c.4) Use ppolymorphism
+
+
+
+	Shape shape = new Triangle();
+	shape.draw();
+
+	Shape shape = new Circle();
+	shape.draw();
+
+
+//depending on what shape object is provided --> corresponding draw() called
+//what avoided? calling method of object itself
+THIS IS POLYMORPHISM	 
+
+
+c.5) What problem? still hardcoded triangle and circle in application class
+
+
+d) 
+
+d.1) Create a method , pass shape object as parameter // what is this shape object? Parent class general object
+										//shape object can be of type Circle or Triangle
+Application class
+
+public void myDrawMethod(Shape shape) {
+shape.draw( );
+
+}	
+
+What output? depend on what object passed
+
+conclusion: myDrawMethod calls draw() from parent class Shape --> which calls relevant method
+		
+		  draw() not dependent on Circle class and Triangle class 
+
+
+d.2) where is shape object intialized? somewhere in Application class
+	
+for ex.
+Shape shape = new Triangle();
+myDrawMethod(shape);
+
+
+conclusion? Application class still dependent on Triangle class for draw()
+_________________________________________________________________________________________________
+		 	
+
+d.3) how to draw Circle instead from application class?
+
+have to modify code from
+
+Shape shape = new Triangle();
+myDrawMethod(shape);
+
+
+to 
+
+Shape shape = new Circle();
+myDrawMethod(shape);
+
+-------------------------------------------------------
+Eventually application class will look like:
+
+Shape shape = new Circle();
+myDrawMethod(shape);
+
+public void myDrawMethod(Shape shape) {
+shape.draw( );
+
+}	
+---------------------------------------------------------
+
+Q) What is dependency here? 
+
+Shape shape = new Circle();
+myDrawMethod(shape);
+
+
+--------------------------------------------------------
+d.4) Objective: move dependency outside Application class, so Application class does not know what shape 
+is being drawn
+
+Who will provide the dependency then? Other class
+
+
+Change code structure From
+
+Application
+  Triangle
+    draw()
+
+
+Change code structure TO
+
+Application(Drawing)
+  Shape
+    draw()
+
+
+Different Class
+  Triangle
+    draw()
+
+----------------------------------------------------------------------------------
+
+d.4.1) remove instantiation of shape object of type Shape from application(Drawing)
+d.4.2) Create a setter with input shape object, and sets shape object
+d.4.3) Create drawShape() which will call whatever setted shape.draw()
+
+protected class Drawing {
+  private Shape shape;
+
+  public setShape(Shape shape) {		//setter
+      this.shape = shape;
+  }
+
+  public drawShape() {			//calls draw() of whichever shape object set
+	this.shape.draw();
+  }
+}
+
+Q) Where is shape() instantiated for ex with new Triangle() etc? NOT IN APPLICATION CLASS(Drawing)
+												Different class : 
+Application class (Drawing) will not initialize the shape.
+Drawing class assumed, somebody will instantiate using setter
+
+
+d.4.4) Objective achieved: Dependency of Shape from Drawing
+
+a) how to draw triangle? pass triangle object to setter --> use drawShape()
+
+b) how to draw circle? pass circle object to setter 	  --> use drawShape()
+
+
+Q) What different class looks like?
+
+Triangle myTriangle = new Triangle();			//instantiate triangle
+Drawing drawing = new Drawing();				//instantiate drawing object of Drawing class
+
+drawing.setShape(myTriangle);				//use setter to set drawing object as myTriangle  //this.shape = myTriangle
+drawing.drawShape();						//call drawShape() for myTriangle object of type Triangle
+
+------------------------------------------------------------------------------------------------------------
+What objective achieved?
+
+
+Change code structure From
+
+Application
+  Triangle
+    draw()
+
+
+Change code structure TO
+
+Application(Drawing)
+  Shape
+    draw()
+
+
+Different Class
+  Triangle
+    draw()
+-----------------------------------------------------------------------------------------------------------
+
+Advantage: dont have to modify Drawing() to use different shape object
+can just pass different shape object in Drawing class setter
+
+
+Q) Still have to modify Different class? Triangle --> Circle if needed? YES
+Something has to be changed
+
+Whole dependency separated out of a class
+
+Does drawing class know what it is dependent on/ what it is drawing ? NO
+ if what to draw changes --> drawing class is not modified
+
+
+CONCLUSION: What can we draw with Drawing class? All kinds of shapes by setter. 
+		 Does Drawing class have to change to draw different shapes? No
+
+Why drawing class does not change? it does not own dependency of Drawing class to Shape shape object
+It is owned  by Different class
+
+
+
+Drawing class dependent on Triangle object triangle and Circle object circle
+Drawing class will receive these dependencies from outside using setter
+
+________________________________________________________________________________________________________
+Q) How spring helps to code in dependencies ?
+
+Spring takes care of the Different class as well
+dont have to write the Different class 
+
+just have to configure 
+	right dependencies --> right objects
