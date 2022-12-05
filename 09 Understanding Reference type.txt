@@ -1,0 +1,169 @@
+Why reference object? Real world applications need to put reference objects inside one another
+
++++++++++++++++++++++++++++++++++++++++++++++
+3 ways to add reference value in config file:
+
+1) Ref as an element
+	<pr0perty name="ob"> ref bean="bref" /> </property>
+
+2) Ref as an attribute
+	<property name="ob" ref="bref" />
+
+3) Ref in pschema
+	<bean class="com.springcore.ref.A" name = "aref" p:x="33" p:ob-ref="bref"  />
+	
++++++++++++++++++++++++++++++++++++++++++++++
+package structure:
+com.springcore.ref
+2 A.java
+
+g] B.java
+
+X] refconfig.xml
+
+--------------------------------------
+
+Class A object ---->  Class B object
+
+
+A is dependent on B : A using B's object
+
+A = dependent object
+B = dependency
+
+-----------------------------------------------------------------------------------------------------
+a.1) //A dependent on B	//Print B object in A object
+
+		public class A {
+			private int x;	
+			private B ob;		//create object of type B in A
+
+		public int getX() {
+			return x;
+		}	
+		public int setX(int x) {
+			this.x = x;
+		}		
+
+		public B getOb() {		//create method of type B in A
+			return ob;
+		}
+
+		public void setOb(B ob){	//create setter for ob
+			this.ob = ob;
+		}
+		
+		public A() {			//constructor for A
+			super();
+		}
+		@Override I
+		public String toString() {
+			return "A [x=" + x + ", ob = " + ob + "]";
+		}
+	}
+
+
+a.2) 		public class B {
+		
+			private int y;	
+		
+			public B getY() {
+				return y;	
+			}
+
+			public B setY(int y) {
+				this.y = y;	
+			}
+			public B() {
+				super();
+			}
+			@Override I
+	
+				public String toString() {
+					return "B [y=" + y + "]";
+			}
+		}
+
+
+
+a.2) 	refconfig.xml
+	a.3.1) declare B(dependency) in ref config in <bean class = "classpath" name = "bref"
+			
+	a.3.2) use B member variable y as property and value
+	//Successfully put B class object in config using bean and property tag
+	
+			<bean class="com.springcore.ref.B" name = "bref">
+				<property name="y" value="90" />
+			</bean>
+
+
+	a.3.3) declare A object in ref config in <bean class ="com.springcore.ref.A" name = bref>
+			a.3.3.1) add property x with value 12
+			a.3.3.2) add bref bean in property // will initilaize to 12
+
+			<bean class="com.springcore.ref.B" name = "bref">		//insert y of type B
+				<property name="y" value="90" />
+			</bean>		
+
+			<bean class="com.springcore.ref.A" name = "aref">		
+				<property name="x" value="12" />				//insert x of type A
+
+				<property name="ob">						//insert ob of type bref		// can also write this way: <property name="ob" ref="bref" />
+					<ref bean="bref" />
+				</property>
+
+			</bean>
+			
+													
+			
+
+
+a.3) Test.java
+	a.3.1) create container object of type ApplicationContext
+	a.3.2) .getBean(aref);								//get A class object
+	a.3.3)  System.out.println(temp.getX());					//use A class object
+	a.3.4)  System.out.println(temp.getOb());					//Use B class method getOb() of type B which is inside A
+	a.3.5)  System.out.println(temp.getOb().getY()); 				//call getY() using the above found object 
+
+		package com.springcore.collections;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+public class Test {
+	public static void main(String[] args) {
+		
+		ApplicationContext context = new ClassPatthlApplicationContextm("com/springcore/ref/refconfig.xml");	//create container object context	
+      	A temp = (A) context.getBean("aref");			//get aref bean -> type cast to type A
+
+		System.out.println(temp.getX());				//call .getX() using temp of type A
+		System.out.println(temp.getOb().getY());					
+		System.out.println(temp);					//calls toString() from A
+	}	
+}
+
+>Output:
+
+12		// from A object
+90		// from B object
+A [x=12, ob=B [y=90]]
+
+
+ConclusioN: we accessed bref bean from aref bean
+	How? created reference type ob : <property name="ob" ref="bref" /> inside aref to access bref
+===================================================================================================================================================
+ALTERNATIVE
+
+Q) Any other way to use different bean from other? pschema
+
+
+			<bean class="com.springcore.ref.B" name = "bref">		//insert y of type B
+				<property name="y" value="90" />
+			</bean>		
+
+			<bean class="com.springcore.ref.A" name = "aref" p:x="33" p:ob-ref="bref"  />	
+													    -------
+														//implies ob is reference type
+
+Output:
+
+33		// from A object
+90		// from B object
+A [x=12, ob=B [y=90]]
