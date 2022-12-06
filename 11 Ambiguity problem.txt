@@ -1,0 +1,132 @@
+When faced? in constructor injection
+
+a.1) constructor 1 and constructor 2 both take different type var
+
+a.2) Declare new bean "add" for Addition class, passes value 12 and 34		//by default String
+	which constructor gets called?
+		no constructor with String arguments present
+
+	a.2.1) Test: public Adition(int a,int b) got called
+		//How decided? Top to down first come constructor
+		//if we switch order 	: public Adition(doub1e a,double b) will be called
+	
+
+	a.2.2) Create object using other bean	
+		Create constructor of type string		//convert string to integer using parseInt()
+										//if we create constructor of type String -> String constructor called
+										//order overruled for default constructor
+					
+	a.2.3) How to specify index in constructor argumments in bean?
+			<bean class="com.springcore.ci.Adition" name="add" >
+			<constructor-arg value="12" type="int" index="1" />
+			<constructor-arg value="34" type="int" index="0" />
+
+			>Output:
+			Constructor : int , int					//int int constructor called
+			Durgesh : 12{ Python programming languae }
+			Value of a = 12
+			Value of a = 34
+			Sum is= 46 I							//Constructor called -> doSum()
+
+
+
+package com.springcore.ci;
+public class Addition {
+	private int a;
+	private int b;
+	public Addition(int a,int b)
+{
+	this.a=a;
+	this.b=b;
+	System.out.print1n("Constructor : int , int");
+}
+	public Addition(doub1e a,double b)
+{
+	this.a=(int)a;
+	this.b=(int)b;
+	System.out.print1n("Constructor : double , double");
+ I
+}
+	public Addition(String a,String b)
+{
+	this.a=Integer.parseInt(a);
+	this.b=Integer.parseInt(b);
+	System.out.print1n("Constructor : String , String");
+ I
+}
+	
+
+	public void doSum() 
+	{
+		System.out.println("Value of a "+this.a);
+		System.out.println("Value of b "+this.b);
+		System.out.println("Sum is +(this.a+this.b));
+	
+	}
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ciconfig.xml
+
+
+<?xml version="1.6" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/zael/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:c="http://www.springframework.org/schema/c"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+<bean c1ass="com.springcore.ci.Certi" name="cer"
+c:name="Python programming Languae">
+</bean>
+
+<bean c1ass="com.springcore.ci.Person" name="person">
+	<constructor-arg value="Durgesh" />
+	<constructor-arg value="12" />
+	<constructor—arg ref="cer" />
+</bean>
+
+
+<bean c1ass="com.springcore.ci.Addition" name = "Add">
+	<constructor-arg value = "12" />
+	<constructor-arg value = 34 />  
+		
+</bean>
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test.java
+package com.springcore.ci;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+
+public class Test {
+
+  public static void main(String[] args) {
+
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/ci/ciconfig.xml")
+		Person p=(Person)context.getBean("person");
+		System.out.println(p);	//calls overriden toString()
+		Addition add = context.getBean("add);
+		add.doSum();
+	}
+}
+
+
+Constructor : int , int					//int int constructor called
+Durgesh : 12{ Python programming languae }
+Value of a = 12
+Value of a = 34
+Sum is= 46 I							//Constructor called -> doSum()
+____________________________________________________________________________________
+
+ConclusioN:
+a) by default String container assumes : String value
+b) if not string -> looks for order
+c) can also specify constructor arguments
+

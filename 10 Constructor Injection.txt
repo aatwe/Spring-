@@ -1,0 +1,228 @@
+Objective: call constructor of object instead of injecting property (setter)
+
+What can we pass in constructor? objects, collection, primitive type value.
+
+why calling constructor? no getter setter this time	 
+
+a.1) Create class with constructor and toString()
+a.2) Create class bean in ciconfig.xml
+a.3) Earlier we use property tag to use property injection
+	how to use constructor injection? <constructor-args>			//can only pass1 value	//constructor-args: by default takes String
+		
+		how to specify type in constructor-args? <constructor-arg value= "Gajju" type="int" />	//however, spring intelligent, understands type
+	
+		a.3.1) 3 ways to use value in tag
+			a.3.1.1)As a tag
+				   <constructor-args> 
+					<value>Gajju</value>
+				   </constructor-args>
+			a.3.1.2) As a property
+				   <constructor-arg value= "Gajju"> 
+			a.3.1.3) As cSchema						//have to use cSchema namespace	//hint just change p->c
+					<bean class="com.springcore.ci.Certi" name="cer" c:name="Python p rogramming Language"		//note: 3rd name is Cert(String name) argument(name)
+					</bean>
+
+		a.3.2) Specify both arguments of constructor -> constructor Person(String name, int personId) called -> object initilaized -> can call methods of object
+		
+a.4) Test
+>Output:
+Gajju : 12
+
+
+
+a.5) Q) How to pass object to constructor?
+
+	a.5.1) Create class Certi.java
+			toString() will print name of whatever object passed in constructor
+	a.5.2) pass certi object in Person() 
+	
+	a.5.3) Use certi object to initialize certi variable in Person class
+			print cert in Person class toString()
+	
+	a.5.4) Create extra bean cer for Certi class		//this will pass value into Cert(String name)
+
+	a.5.5) Use cer bean object in person bean as reference  --> which will go in Person(String name, int personId, Certi certi) Certi certi argument 
+
+
+
+----------------------------------------------------------------------------------------------------		
+
+src/main/java
+ com.springcore.ci
+	Person.java
+	ciconfig.xml
+
+
+package com.springcore.ci;
+public class Person {
+	private String name;
+	private int personId;
+
+public Person(String name, int personId) {
+	this.name = name;
+	this.personId = personId;
+}
+@Override
+public String toString() {
+	return this.name+" : "+this.personId;
+}
+}
+	
+++++++++++++++++++++++++++++++++++++++++++
+ciconfig.xml
+
+<mel version="1.0" encoding="UTF—8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.W3.org/ZQQI/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+<bean class = "com.springcore.ci.Person" name="person">
+	<constructor-arg value = "Gajju" /> 
+	<constructor-arg value = "12" /> 
+	
+</bean>
+</beans>
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+package com.springcore.ci;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+public class Test {
+
+  public static void main(String[] args) {
+	ApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/ci/ciconfig.xml")
+	Person p=(Person)context.getBean("person");
+	System.out.println(p);	//calls overriden toString()
+	}
+}
+
+>Output:
+Gajju : 12
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+========================================================================================================
+a.5) Pass object in constructor
+
+Person.java
+
+package com.springcore.ci;
+public class Person {
+	private String name;
+	private int personId;
+
+public Person(String name, int personId, Certi certi) {
+	this.name = name;
+	this.personId = personId;
+	this.certi = certi;
+}
+@Override
+public String toString() {
+	return this.name+" : "+this.personId;
+}
+}
+
+Certi.java
+
+package com.springcore.ci;
+
+public class Certi {
+     String name;
+
+public Certi(String name) {
+	super();
+	this.name = name;
+	this.personId = personId;
+	this.certi = certi;
+}
+
+@Override
+public String toString() {
+	return this.name+ " : "+ this.personId +"{" + this.certi.name + "}"; 
+}
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ciconfig.xml
+
+<mel version="1.0" encoding="UTF—8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.W3.org/ZQQI/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+<bean class = "com.springcore.ci.Certi" name="cer">
+	<constructor-arg value = "Android Using Kotlin" /> </constructor-arg> 
+</bean>
+<bean class = "com.springcore.ci.Person" name="person">
+	<constructor-arg value = "Gajju" /> 
+	<constructor-arg value = "12" /> 
+	<constructor-arg ref="cer" />
+</bean>
+</beans>
+
+===========================================================================================================
+Test.java
+package com.springcore.ci;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+public class Test {
+
+  public static void main(String[] args) {
+	ApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/ci/ciconfig.xml")
+	Person p=(Person)context.getBean("person");
+	System.out.println(p);	//calls overriden toString()
+	}
+}
+
+>Output:
+Gajju : 12{ Android Using Kotlin }
+		----------------------
+		we get this value from Certi object
+
+
+Ex How to pass List in constructor? Use <list> tag
+
+import java.uti1.List;
+public class Person {
+	private String name;
+	private int personId;
+	private Certi certi;
+	private List<String> list;
+ 	public Person(String name, int personId,Certi certi,List<String> list) {
+		this.name = name;
+		this.personId = personId;
+		this.certi=certi;
+		this.list=listfl
+} 
+@Override
+public String toString() {
+	return this.name+" : "+this.personId+"{ "+this.certi.name+" }";
+}
+}
+
+
+<bean name="..." class="...">
+	<constructor-arg value="12"/>
+	<constructor-arg value="XYZ"/>
+	<constructor-arg ref="person1"/>
+	<constructor-arg>
+		<list>
+			<value>ABC</value>
+			<value>XYZ</value>
+			<value>PQR</value>
+		</list>
+	</constructor-arg>
+

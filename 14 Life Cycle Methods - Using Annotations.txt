@@ -1,0 +1,153 @@
+Objective:
+
+What type of annotations?
+
+
+a) @PostConstruct 	//provides init functionality
+
+	a.1) create bean example for class Example
+
+	a.2) .getBean(example)  --> Output:
+
+	a.3) Check output:
+		
+
+>Output:
+
+Example [Subject=Maths]		//no init and destroy yet
+
+
+b) Use Annotation to create init and destroy()
+
+	b.1) In Example.java create both methods
+		public void start() {
+			System.out.println("starting method")
+		}
+	
+		and
+		@PostConstruct
+		public void end() {
+			System.out.println("ending method")
+		}
+
+
+	b.2) Will these methods work by directly putting in Example.java? //not in xml OR interfaces
+	Solution: Use annotations @PostConstruct and @Predestroy 
+	Note: both part of Java EE --> Java EE depricated in Java 9 and removed from Java 11
+		can use in java 8, cant in java9/11: Solution: Add additional dependency
+
+
+	Copy below dependency to pom.xml use these annotations:			//Why pom.xml useful: can dad dependency in it
+	<dependency>
+	<groupId>javax.anno:ation</groupld>
+	(artifactId>javax.annotation—api</artifactId>
+	<version>l.3.2</version>
+	</dependency>
+	-> Import
+	>Try running -> still no output	,why? Annotations disabled by default
+	
+	b.2.1) How to enable annotations?
+		b.2.1.1) Make surre: name space is added
+				xmlns : cont ext: "http : //www. springframework . org/ 5 chema/ context "
+		b.2.1.2) Add below in config.xml
+				<context:annotation-config />		//note: needs namespace
+
+				b.2.1.2.1) 
+				Note: How to enable only particular annotations? <bean />
+				copy path from Test.java ->	 Ctrl + Shift + p -> Type CommonAnnotationBeanPostProcessor
+					copy package:package org.springtramework.context.annotation;
+					Copy class name : class CommonAnnotationBeanPostProcessor			
+	
+				in config.xml add below:
+
+				<bean class ="package org.springtramework.context.annotation.CommonAnnotationBeanPostProcessor" />	
+				Try running now ->  it will run // only the above 2 annotations(postConstruct() and preDestroy()) enabled	
+			
+
+	b.2.2)
+		@PostConstruct		//import now	//import javax.annotation.PostConstruct;  //part of JavaEE
+
+		public void start() {
+			System.out.println("starting method")
+		}
+	
+		and
+		@PreDestroy		//import now	//import javax.annbtation.PreDestroy;	//part of javaEE
+		public void end() {
+			System.out.println("ending method")
+		}
+
+	b.2.3) Final Output:	
+		starting method			//from preconstruct
+		Example [subject=Maths]
+		ending method			//from post construct
+
+		
+--------------------------------------------------------	
+
+Example.java
+
+package com.springcore.lifecycle;
+public class Example {
+	private String subject;
+	public String getSubject() {
+		return subject;
+}
+	public void setSubject(String subject) {
+		this.subject = subject;
+}
+	public Examp1e() {
+		superO;
+		// TODO Auto-generated constructor stub
+}
+
+@Override
+	public String toString() {
+		return "Example [subject=" +subject +"]";
+}
+
+I
+}
+------------------------------------------------------------------
+Config.xml:
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframeworh.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd")
+
+<context: annotation-config / >		//this will enable all annotations
+
+<bean class="com.springcore.lifecycLe.Example" name="example">
+	<property name="subject" value= "Maths"> </property> 
+</bean>
+
+</beans>
+------------------------------------------------------------------
+Test.java
+
+package com.springcore.lifecycle;
+
+import org.springframework.context.ApplicationContext;
+
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+public class Test {
+
+	public static void main(String[] args) {
+		AbstractApplicationContext context = new ClassPatthlApplicationContext("com.springboot.Test")
+		
+		Example example=(Example) context.getBean("example");
+		System.out.println(example);
+	}
+
+
+
+b) @PreDestroy		//provides destroy functionality

@@ -1,0 +1,174 @@
+We know the smart Spring container does all magic
+
+
+a) What methods provided by spring to bean?
+
+						//can change the name of methods
+				
+
+a.1) public void init()
+
+	What function? initialization code, Loading, config, Connecting db , Web service
+	
+
+
+a.2) public void destroy()
+
+	What function? clean up code
+
+
+
+b) Spring container: takes input: bean + bean meta data
+	what is bean? java class
+	what is bean meta data? config file
+
+
+b.1) What happens after we .getBean()
+
+
+	b.1.1) create object
+
+	b.1.2) set object property values	//instantiation done
+
+	b.1.3) init()					//database connection opened, web services configuration loaded
+					
+	b.1.4) Read and use the bean()		//how come? bean object instantiated
+
+	b.1.5) destroy()					//called before object deletion
+								//all initialized things cleaned up from container
+								//how clean up done? clean up code
+
+b.2) how to call lifecycle methods?
+	1) configure in xml
+		1.1) Create new class Samosa	
+	
+	2) Spring interface: implement them and override methods
+
+	3) Annotation
+
+
+c) 
+	c.1) Create 2 life cycle methods.		//How called? automatically, since lifeycle methods
+
+
+		public void init() {
+			System.out.println("Inside init");
+		}
+		
+		public void destroy() {
+			System.out.println("Inside destroy");
+		}
+
+	c.2) Specify property init-method  = "init" and destroy-method = "destroy" in config file
+
+
+	c.3) Observe order:
+		instantiate price
+		init() 
+		Samosa [price=10.0]
+
+		//Note destroy() didnt get called
+
+	c.4) how to enable destroy()?
+		c.4.1) use AbstractApplicationContext	//import 
+			 use	context.registerShutdownHook();
+			this hook will enable destroy-method = "destroymethodname"
+
+			//this destroy method is for cleaning up code
+			//registerShutDownHook() belongs to AbstractApplicationContext
+	
+Samosa.java
+com.springcore.lifecycle
+
+package com.springcore.lifecycle;
+
+public class Samosa {
+	private double price;
+	
+	public double getPrice() {
+		return price;
+	}
+	public void setPrice(double price) {
+		System.out.println("Setting price");
+		this.price = price;
+	}
+	public Samosa() {
+		super();
+	// TODO Auto-generated constructor stub
+} 
+
+	public String toString() {
+		return "Samosa [price=" + price + "]";
+	}
+	
+	public void init() {
+		System.out.println("Inside init");
+	}
+		
+	public void destroy() {
+		System.out.println("Inside destroy");
+	}
+}
+	
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+config.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/Zeel/XMLSChema—instance"
+xmlns:context="http://www.springframeworh.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<bean c1ass="com.springcore.LifecycLe.Samosa" name="sl" init-method="init" destroy-method= "destroy">
+
+<property name="price" value="10" />
+
+</bean>
+
+</beans>
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test.java
+package com.springcore.lifecycle;
+public class Test {
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+
+ApplicationContext context = new ClassPatthlApplicationContext("com/springcore/lifecycle/config.xml");
+
+Samosa s1 =(Samosa)context.getBean("s1");
+System.out.println(s1);
+
+}
+}
+>
+Setting Price
+Inside init method
+Samosa [price=10.@]
+
+----------------------------------------
+Test.java
+package com.springcore.lifecycle;
+public class Test {
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+
+AbstractApplicationContext context = new ClassPatthlApplicationContext("com/springcore/lifecycle/config.xml");
+
+Samosa s1 =(Samosa)context.getBean("s1");
+System.out.println(s1);
+context.registerShutdownHook();
+
+
+}
+}	
+
+
+ConclusioN: just specify in config file which is init method and which is destroy method
+then enable destroy
