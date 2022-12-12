@@ -1,0 +1,337 @@
+a.1) what we learnt? how to inject collections : collections: list/map/set + properties
+
+
+
+
+
+a.2) Ex in config.xml
+
+What problem? list scope not outside property: cannot use same list outside of that property. (have to copy paste)
+
+Also: when specifying <list> in <property> --> not specified if list/vector/linkedlist objec//  object auto creates
+Re-use list / set / map   -> i.e collection
+Solution:Stand Alone collection -> can tell what type of collection
+
+//lets check what class object is list actually? 	System.out.println(empl.getPhones.getClass().getName()
+
+Can see Output:
+[74566471, 4654, 451745, null]
+[Delhi, Lucknow, Kanpur]
+{java=2months, python=1.2months, c=1months}
+java.util.ArrayList
+
+
+
+a.3) How to use linkedlist/vector instead? standalone collection
+
+
+-------------------------------------------------------------------------------------------
+<bean name="emp1" class="com.springcore.coLLections.Emp">
+
+<property name="name" value="Radhe" />
+<property name="phones">
+<1ist>
+	<value>74566471(/value>
+	<value>4654(/value>
+	<value>451745</value>
+<null/>
+</list>
+</property>
+
+<property name="address">
+<1ist>
+	<value>74566471(/value>
+	<value>4654(/value>
+	<value>451745</value>
+<null/>
+</list>
+</property>
+
+-----------------------------------------------------------------------------------------------------------
+Test.java
+
+package com.springcore.collections; gg444ggggggg444ggg444ggoggggggggggggggggggggggf
+*import org.springframework.context.ApplicationContext;fl
+public class Test {
+
+	public static void main($tring[] args) {
+
+	ApplicationContext context=new ClassPatthlApplicationContext("com/springcore/collect
+	Emp emp1=(Emp) context.getBean("emp1");
+	
+	System.out.print1n(emp1.getName());
+	System.out.println(empl.getPhones());
+	System.out.println(emp1.getAddresses());
+	System.out.println(emp1.getCourses());
+	System.out.println(empl.getPhones.getClass().getName());I
+}
+}
+
+>Output:
+Radhe
+
+[74566471, 4654, 451745, null]
+[Delhi, Lucknow, Kanpur]
+{java=2months, python=1.2months, c=1months}
+java.util.ArrayList
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+b) How to create standalone collection?
+ 
+
+b.1) create package springcore/src/main/java  -> com.springcore.standalone.collections
+b.2) Create Person class, Create Test class, Create aloneconfig.xml
+b.3) get data from config to Person -> List
+	b.3.1) Declare Person bean
+
+	b.3.2) instead of local list, create list using util.Schema
+	import: xmlns:util="http://www.springframework.org/schema/utiL"
+	http://www.springframework.org/schema/utiL
+	http://www.springframework.org/schema/utiL/spring-utiL.Xsd
+
+
+	b.3.3) we can use  Util schema -> to create below standalone collections
+		util:constant
+		util:list
+		util:maps
+		util:properties
+		util:property-path
+		util:set
+
+	b.3.4) Create list with id: mybestfriends
+		  Use it inside property with name friends
+			how to use in property?ref
+				<property name="friends" ref bean="mybestfriends"/> </property>
+			//can use as property also: <property name: "friends " ref: "mybestfriends "/>
+
+
+	b.3.5) Test: get objects from person bean into person1 object
+		Print person1 object
+
+	>Output: Person [frienbs=[Aman, Ramn, Ankit, Rohit]]
+	// utilList working 
+
+	Note: test what class list? :System.out.println(person1.getFriends().getClass().getName()); 
+	> java.util.LinkedList
+
+	since we specified: <util:list list-c1ass="java.utiL.LinkedList"
+	
+
+What advantage of standalone collection? Can change to <util:list list-c1ass="java.utiL.Vector"
+
+
+Q) if multiple bean, with different name
+Can use same list again (using ref in property)  //no error
+
+
+Q) create map?
+1) In person.java
+	private Map<String, Integer> feestructure;
+	
+2) in alloneconfig.xml
+	create util map with id fees
+	inside bean with name person1 -> create property with ref = fees
+
+3) Test
+>>Output: getFeestructure()
+
+Person [friends=[Aman, Ramn, Ankit, Rohit], teestructure={Spring Fran
+java.util.Vector
+{Spring Framework=8eee, Django Framework=5669, Hibernate Framework=2000}
+java.util.LinkedHashMap
+
+
+
+
+Q) create TreeMap? similar
+<util:map map-class="java.utiL.TreeMap" id=fees">
+
+
+//TreeMap will keywise sort	
+
+	private Map<String, Integer> feestructure;
+
+>Output:
+{Django Framework=5969, Hibernate Framework=2099, Spring Framework=8eee}
+java.util.TreeMap
+
+
+Q) Inject properties using standalone properties?	
+
+1) generate getters and setters in Person.java
+Note: class Propeties extends Hashtable<Object,Object>
+
+2) Add util:properties with id= dbconfig in aloneconfig.xml
+<util:properties id="dbconfig">
+
+  <prop key="driver"> com.mysql.jdbc.Driver </prop>
+  <prop key="username"> durgesh </prop>
+ <prop key="password"> abc </prop>
+ <prop key="url"> mysql:jdbc://localhost:3306/database</prop>
+
+</util:properties>
+
+
+3) refer in bean:
+	insert property : "properties" with ref = dbconfig
+	
+
+<bean class="com.springcore.standaLone.c0LLections.Person"
+name="person1">
+<!-- <property name="friends"> <ref bean="mybestfriends/> </property> -->
+	<property name="friends" ref="mybestfriends" />
+	<property name="feestructure" ref=Tfees" />
+	<property name="properties" ref="dbconfig" />
+</bean>
+
+
+
+4) Test:
+System.out.println(personl.getProperties());
+
+
+//received all files
+{password=abc, driver=com.mysql.jdbc.Driver, url=mysql:jdbc://localhost:3396/database, username=durgesh}
+
+
+5) What use case for injecting properties this way?
+can make database connecction
+
+what advantage? all config in xml , no config in class file
+dont have to compile java file again for changes,
+can directly makee changes from xml file
+
+
+--------------------------------------------------------------
+Objective achieved: how to make standalone collections
+usign util schema to make standalone, instead of creating locally in bean
+
+can use util properties -> id in different class beans also
+
+----------------------------------------------------------------------------------------------------------
+package com.springcore.standalone.collections;
+import java.util.List;
+public class Person {
+	private List<String> friends;
+	public List<String> getFriends() {
+		return friends;
+	}
+	public void setFriends(List(String> friends) {
+		this.friends = friends;
+	}
+	@Override
+	public String toString() {
+	return "Person [friends=" + friends + "]";
+	}	
+}	
+
+==========================================================================================================
+<?xml version="1.0" encoding="UTF—8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.0rg/2991/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:péfhttp://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+<util:list list-c1ass="java.utiL.LinkedList"
+id="mybestfriends">
+<value>Aman(/value>
+<value>Ramn</value>
+<value>Ankit(/value>
+<value>Rohit(/value>
+
+</util:list>
+
+<bean class="com.springcore.standaLone.coLLections.Person"
+
+
+name="person1">
+<property name="friends">
+	<ref bean= "mybestfriends"/>
+</property>
+	
+</bean>
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test.java
+
+package com.springcore.collections; 
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ClassPathXmlApplicationContext;
+public class Test {
+
+	public static void main($tring[] args) {
+
+	ApplicationContext con = new ClassPathlApplicationContext("com/springcore/standalone/collections/aloneconfig.xml");
+	Person person1 = con.getBean("person", Person.class);
+	System.out.println(person1);
+	System.out.println(person1.getFriends().getClass().getName());
+}
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Map:
+
+Person.java
+
+package com.springcore.standalone.collections;
+import java.util.List;
+import java.util.Map;
+public class Person {
+private List<String> friends;
+private Map<String, Integer> feestructure;
+public; List<String> getFriends(	), {
+	return friends;
+}
+public void setFriends(List(String> friends) {
+this.friends = friends;
+}
+@Override
+public String toString() {
+	return "Person [friends=" + friends + "]";
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+aloneconfig.xml
+
+
+<util:map map-class="java.utiL.HashMap" id=fees">
+<entry key="Spring firamework" value="8000" />
+<entry key="Django Framework" value="5000" />
+<entry key="Hibernate Framework" value="2000" />
+</util:map>
+
+<bean class="com.springcore.standaLone.collections.Person"
+name="person1">
+<!-- (property name="friends"> (ref bean="mybestfriengs"/> (/property> -->
+<property name=7friends" ref="mybe§tfriends" />
+<property name=TfEestructure" ref=jfees">(/property>
+</bean>
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test.java
+
+package com.springcore.standalone.collections;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+public class Test {
+public static void main($tring[] args) {
+ApplicationContext con = new ClassPatthlApplicationContext(
+"com/springcore/standalone/collections/aloneconfig.xml");
+Person personl = con.getBean("person1", Person.c1ass);
+System.out.println(person1);
+System.out.println(person1.getFriends().getClass().getName());
+System.out.println(" Id);
+System.out.println(person1.getFeestructure();
+System.out.println(person1.getFeestructure().getClass().getName());
+}
+}

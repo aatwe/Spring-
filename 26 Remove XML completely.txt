@@ -1,0 +1,273 @@
+Objective:
+
+1) Learn about @Configuration  @ComponentScan  @Bean
+
+
+2) Hate XML 
+	Do Java Annotation based configuration without using XML
+
+
+
+
+a.1) create package com.springcore.javaconfig
+
+a.2) Create student class
+
+a.3) create DemoMain Class
+
+a.4) specify base class path in ApplicationContext
+
+a.5) Use getBean in DemoMain.java
+
+a.6) what if we dont provide bean anyehere in xml?
+	container will create bean with same name as class
+	if want to give our own : specify in @Component("firststudent")
+
+a.7) print student object
+
+a.8) Close context
+
+=> RUn -> Error: No bean 'firststudent' available
+
+Why error? spring container doesnt know where firststudent is?
+
+
+a.9) Add : 
+<context: component-scan base-package="com.springcore.javaconfig"/>
+//tells path of @Component
+
+
+a.10) Output: object 
+com.springcore.javaconfig.Sgudent@18078bef
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+How to totally remove xml file?
+
+b.1) delete xml file
+b.2) how to tell where @Component is now?
+b.3) Create JavaConfig.java
+b.4) import org.springframework.context.annotation.Configuration;
+
+b.5) Use @Configuration to identify which java class handles all configuration
+
+b.6) Specify where base package is
+import:
+import org.springframework.context.annotation.ComponentScans;
+@ComponentScan(basePackages = "com.springcore.javaconfig")
+//container can find firststudent
+
+
+@Configuration
+@ComponentScan(basePackages = "com.springcore.javaconfig")
+public class JavaConfig {
+
+}
+
+
+b.7) What to provide in context classpath? cant use xml
+
+use other implementation of application context (which uses annotation based config)
+
+ApplicationContext context = new AnnotationConfigApplicationContext(JavaConfig.class);
+
+
+b.8) create study() in Student for testing
+	call study()
+	student.study(); in DemoMain.java
+
+
+b.9) Run DemoMain.java
+
+com.springcore.javaconfig.Student@323b36e0
+student is reading book
+
+Objective: Achieved: XML Avoided
+
+
+
+c) 
+c.1) Create method that returns object of bean Student  in JavaConfig.java
+
+	i.e getStudent() of type Student
+
+	initialize student object and return
+
+How IOC container will know to take the returned object from this method?
+
+Add @Bean
+tells ioc container to accept returned data
+
+-> can .getBean() after this
+
+Note: change getBean id to method name
+i.e firststudent -> getStudent
+
+
+c.2) Run DemoMain
+
+com.springcore.javaconfig.Student@72d1ad2e
+student is reading book
+
+
+program will run even without @ComponentScan
+
+
+------------------------------------------------------------
+d.1) How to inject dependency?
+create in Student.java
+
+private Samosa samosa; 
+	
+create getter setter
+
+
+d.2) Create class Samosa with display()
+
+d.3) call this.samosa.display() in Student class -> study()
+
+d.4) inject dependency in member var samosa in Student class
+
+d.5) Create getSamosa() in JavaConfig.java
+
+	put getSamosa() object as input into new Student(getSamosa())
+
+>Output:
+com.springcore.javaconfig75tudent@192d43ce
+My price is little be high...
+student is reading book
+
+Objective achieved: when we call getStudent -> getSamosa() -> return new Samosa()
+//both beans pass to spring container -> student.study()
+
+Alternate way: use @Component -> 
+	can use 	Autowriing	
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Final Conclusion:
+what 3 ways to configure bean?
+a) XML : 
+b) @Components
+c)@Bean with javaconfig
+
+
+after using these -> get objects from spring bean
+
+/////////////////////////////////////////////////////////////////
+Note: Can get Bean with different names like below
+
+@Bean(name = {"student","temp","con")
+
+public Student getStudent() {
+// creating a new student object
+Student student = new Student(getSamosa());
+return student;
+
+}
+
+
+public class DemoMain {
+	public static void main(String[] args) {
+		ApplicationContext context = new AnnotationConfigApplicationContext(JavaConfig.class);
+		Student student = context.getBean("student", Student.class);
+		System.out.println(student);
+		student.study();
+}
+
+
+>Output: still works
+com.springcore.javaconfig:Student@1afd44cb
+my price is little be high...
+student is reading book
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----------------------------------------------------------------
+DemoMain.java
+
+package com.springcore.javaconfig;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+
+public class DemoMain {
+	public static void main(String[] args){
+	
+	//ApplicationContext context= new ClassPatthlApplicationContext("com/springcore/javaconfig/config.xml");
+	
+	ApplicationContext context = new AnnotationConfigApplicationContext(JavaConfig.class);
+
+	Student student = context.getBean("getStudent",Student.class);\
+
+	System.out.println(student);
+
+	//context.close()
+
+	student.study();
+}
+
+-----------------------------------------------------------------
+Student.java
+
+
+package com.springcore.javaconfig;
+import org.springframework.stereotype.Component;
+
+public class Student {
+
+	private Samosa samosa;
+
+	public Student(Samosa samosa) {
+		super();
+		this.samosa = samosa;
+	}
+
+	public Samosa getSamosa() {
+		return samosa;
+	}
+	public void setSamosa(Samosa samosa){
+		this.samosa = samosa;
+	}
+
+	public void study() {
+	this.samosa.display();
+	System.out.println("student is reading book");
+}
+}
+
+----------------------------------------------------------------	
+-----------------------------------------------------------------
+JavaConfig.java
+
+package com.springcore.javaconfig;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScans;
+
+	
+@Configuration
+@ComponentScan(basePackages = "com.springcore.javaconfig")
+public class JavaConfig {
+	@Bean
+	public Samosa getSamosa()
+	{
+		return new Samosa();
+	}
+	@Bean
+	public Student getStudent() {
+		Student student = new Student(getSamosa());
+		return student;
+	}
+}
+
+-----------------------------------------------------------------
+package com.springcore.javaconfig;
+public class Samosa {
+	public void display() 
+	{
+		System.out.println("My price is littel bit high")
+	}
+}
+
+-----------------------------------------------------------------
+

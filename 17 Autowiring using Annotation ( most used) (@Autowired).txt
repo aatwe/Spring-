@@ -1,0 +1,107 @@
+Objective:
+Create com.springcore.auto.wire.annotation
+
+Address.java
+Emp.java
+Test.java
+autoconfig.xml
+
+
+
+a.1) add.annotation in path  //same code as before
+
+<bean class="c0m.springcore.auto.wire.annotation.Address" name="addressl">
+<property name="street" value="Temp Street" />
+<property name="city" value="DeLhi" />
+
+</bean>
+
+<bean class="com.springcore.auto.wireébnnotationAddress" name="address">
+<property name="street" value="Sec0nd Street" />
+<property name="city" value="Kanpur" />
+
+</bean>
+
+
+
+a.2) In config.xml
+
+
+<bean class: "com. springcore. auto. wire. annotation . Emp " name: "empl " />
+
+
+along with bean address bean of class Address
+
+
+a.3) In Emp.java	 
+add
+@Autowired
+private Address address;
+
+//this will auto inject
+
+
+a.4) In Emp.java
+Add
+<context:annotation-config />
+
+
+a.5) 
+Output:
+Emp [address=Address [s treet=Temp Street, city=De1hi]]
+
+
+
+a.6) what if change  bean name? for ex address to  tempaddress
+//no change in output
+Emp [address=Address [street=Temp Street, city=De1hi]]
+
+
+a.7) what if we use @Autowired over setAddress() ?
+
+@Autowired
+public void setAddress(Address address) {
+System.out.println("Setting value");
+this.address = address;
+
+}
+
+>Output:
+Setting value
+Emp [address=Address [street=Temp Street, city=De1hi]]
+
+
+a.8) what if we use over constructor Emp() in Emp.java'
+
+@Autowired
+public Emp(Address address) {
+	super(); 
+	this.address = address; :31
+	System.out.println("inside constructor");
+}
+
+
+
+conclusioN: can use Autowired over property,setter,constructor
+bean name and reference var name keep same
+
+-----------------------------------------------------------------------------------------
+<?xml version="1.6" encoding="UTF—8"?>
+(beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframeworh.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring—beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring—context.xsd">
+<bean class="com.springcore.auto.wire.annotation.Address" name="address">
+<property name="street" value="Temp Street" />
+<property name="city" value="DeLhi" />
+</bean>
+
+<context:annotation-config />
+
+<bean class="com.springcore.auto.wire.ann0tation.Emp" name="emp1" />
+
+</beans>

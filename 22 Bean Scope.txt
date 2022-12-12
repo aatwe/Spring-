@@ -1,0 +1,218 @@
+What is bean scope?
+
+
+predefined bean scopes:
+
+
+
+a) Singleton scope		//by default appllied
+Whenever we configure a class -> and ask spring container for object
+spring container creates 1 object => and keeps giving reference of this object
+//we think we are getting different object at different time
+//check hashcode -> its same object
+
+
+
+b) prototype scope		//
+New object everytime
+
+  
+c) request	scope			//for http request	
+
+d) session	scope			//web application specific 
+
+
+e) globalsession	scope		//portlet application specific 
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Implement
+
+a.1) try printing hashcode
+System.out.println(student.hashCode());
+	895281180
+
+
+a.2) Ask container again for student class object
+Student student2 = con.getBean("ob",Student.class);
+
+//print hashcode
+	895281180
+	895281180
+
+a.3) Conclusion: container sent same object again	 
+
+
+b.1) How to get new object on every call?
+Change scope from Singleton -> prototype
+How to change bean scope?
+
+ b.1.1) XML  //specify in bean scope
+
+	<bean class=" " name=" " scope=" " />
+
+Test:
+	1) create Teacher.java
+	specify in bean name classname , specify scope prototype in bean
+	
+
+	<bean class="com.springcore.stereotype.Teacher" name="teacher" scope="prototype" />
+
+	2) get 2 beans in Test.java
+	Teacher t1 = con.getBean("teacher",Teacher.class);
+	Teacher t2 = con.getBean("teacher",Teacher.class);
+
+
+	3) Print both hashCodes
+	System.out.println(t1.hashCode());
+	System.out.println(t2.hashCode());
+
+>Output:
+7739899861 '
+1631686936
+
+ b.1.2) Annotation  //specify in @Scope	//note: must be used with component
+	
+
+@Component
+@Scope("Prototype")
+Class Student
+{
+
+
+}
+
+
+>Output:
+27684827
+640113647
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+TEST.java
+package com.springcore.stereotype;
+public class Test {
+public static void main(String[] args) {
+	
+
+	ApplicationContext con:
+		new ClassPatthlApplicationContext("com/springcore/stereotype/stereoconfig.xml");
+	
+	Student student = con.getBean("ob",Student.class);
+	System.out.println(student);
+	System.out.println(student.getAddress());
+	System.out.println(student.getAddress().getClass().getName());
+	System.out.println(student.hashCode());
+		
+	Student student2 = con.getBean("ob",Student.class);	
+	System.out.println(student.hashCode());
+
+//------------
+
+
+	Teacher t1 = con.getBean("teacher",Teacher.class);
+	Teacher t2 = con.getBean("teacher",Teacher.class);
+
+	System.out.println(t1.hashCode());
+	System.out.println(t2.hashCode());
+	}
+}
+
+___________________________________________________________________________________
+Stereoconfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/Zeel/XMLSchema—instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<context : component- scan base-package="com.springcore.stereotype" />
+
+
+</beans>
+
+
+___________________________________________________________________________________
+Student.java
+
+package com.springcore.stereotype;
+
+@Component("ob")
+@Scope("prototype")
+public class Student {
+	@Value("Durgesh Tiwari")
+	private String studentName;
+
+	@Value("Lucknow")
+	private String city;
+
+	@Value("#{temp}")
+	public List<String> address;
+
+ 	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city; I
+	}
+
+	public List<String> getAddress() {
+		return address;
+	}
+	
+	public void setAddress(List<String> address) {
+		this.address = address;
+	}
+
+@Override
+public String toString() {
+	return "Student [studentName=" + studentName + ", city=" + city + "I
+}
+}
+
+---------------------------------------------------------------------------------------
+stereoconfig.xml	
+
+<?xml version="1.6" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/zeal/XMLSChema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:util="http://www.springframework.org/schema/utiL"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring~beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/utiL
+http://www.springframework.org/schema/utiL/spring-utiL.xsd
+">
+<context:component-scan
+	base-package="c0m.springcore.stereotype" />
+
+<util:list list-class="java.utiL.ArrayList" id="temp">
+	<value>Lugknow(/value>
+	<value>Delhi</value>
+	<value>Kanpur</value>	
+	<value>My City</value>	
+
+</util:list>
+
+</beans>
+
+---------------------------------------------------------------------------------------
+package com.springcore.stereotype;
+public class Teacher {
+
+}
+

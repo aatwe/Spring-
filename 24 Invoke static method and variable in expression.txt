@@ -1,0 +1,248 @@
+Objective: how to invoke static method / variable in our expression? using SpEL
+
+a.1)
+
+How to use method in expression?
+T(classname).method(param)
+
+
+How to use variable in expression?
+T(class).variable
+
+
+a.2) create private double z
+	Generate getters and setters	
+	Generate toString with z
+
+a.3) lets use sqrt method
+	Ctrl + Shift + D -> java.lang.Math => Open Math class
+									-> use public static double sqrt(double a) {}
+
+	
+a.4) Add
+	@Value("#{ T(java.lang.Math).sqrt(25)}")
+	private double z;
+
+
+
+a.5) Test
+>output:
+Demo [x=33, y=97, z=5.0]		// we used sqrt(25) and evaluated in expression
+	
+
+
+Q) Find E and pi vlaue from Math class
+
+b1) create private double e;
+	create getter setter for it
+
+
+
+b2) Add @Value in Demo.java
+
+	@Value("#{ T(java.lang.Math).E}")
+	private double e;
+
+b3) Run
+Demo [x=33, y=97, Z=lZ.0, e=2.1718281828459045]
+
+
+conclusion: objective achieved: called static methods and static variables 
+
+
+
+Q) How to create objects
+
+new Object(value)
+
+
+c.1) Add variable and @Value
+
+@Value("#{new java.lang.String('Abhilash Atwe')}")		//can provide any class object this way
+private String name;
+
+
+Generate getter setter, generate toString()
+
+Demo [x=33, y=97, z=12.0, e=3.141592653589793, name=Abhilash Atwe]
+
+
+Conclusion: Objective achieved: passed an object with value Abhilash Atwe of String type into expression
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Demo.java
+package com.springcore.spel;
+import org.springframework.stereotype.Component;
+@Component
+public class Demo {
+
+
+
+@Value("#{22 + 11}")
+private int x;
+
+@Value("#{2+5+56+34}")
+private int y;
+
+@Value("#{ T(java.lang.Math).sqrt(25)}")
+private double z;
+
+@Value("#{ T(java.lang.Math).E}")
+private double e;
+
+
+
+@Value("#{new java.lang.String('Abhilash Atwe')}")
+private String name;
+
+
+
+
+public int getX() {
+return x;
+}
+public void setX(int x) {
+this.x = x;
+}
+public int getY() {
+return y;
+}
+public void setY(int y) {
+this.y = y;
+}
+
+public double getZ() {
+	return 2;
+}
+
+public void setZ(double z) {
+	this.z = z;
+}
+public double getE() {
+return e;
+}
+
+public void setE(double e) {
+	this.e = e;
+}
+
+@Override
+public String toString() {
+	return "Demo [x=" + x + ", y = " + y + ", z=" + z +", e=" + e + ", name=" + name]";
+}
+
+
+------------------------------------------------------------------------------------------------
+
+TEST.java
+package com.springcore.stereotype;
+public class Test {
+public static void main(String[] args) {
+	
+
+	ApplicationContext context = new ClassPatthlApplicationContext("com/springcore/stereotype/stereoconfig.xml");
+	Demo d1 = context.getBean("demo",Demo.class);
+
+	System.out.println(d1);	
+  }
+}
+
+___________________________________________________________________________________
+Stereoconfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/Zeel/XMLSchema—instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<context : component- scan base-package="com.springcore.stereotype" />
+
+
+</beans>
+
+
+___________________________________________________________________________________
+Student.java
+
+package com.springcore.stereotype;
+
+@Component("ob")
+@Scope("prototype")
+public class Student {
+	@Value("Durgesh Tiwari")
+	private String studentName;
+
+	@Value("Lucknow")
+	private String city;
+
+	@Value("#{temp}")
+	public List<String> address;
+
+ 	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city; I
+	}
+
+	public List<String> getAddress() {
+		return address;
+	}
+	
+	public void setAddress(List<String> address) {
+		this.address = address;
+	}
+
+@Override
+public String toString() {
+	return "Student [studentName=" + studentName + ", city=" + city + "I
+}
+}
+
+---------------------------------------------------------------------------------------
+stereoconfig.xml	
+
+<?xml version="1.6" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/zeal/XMLSChema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:util="http://www.springframework.org/schema/utiL"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring~beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/utiL
+http://www.springframework.org/schema/utiL/spring-utiL.xsd
+">
+<context:component-scan
+	base-package="c0m.springcore.stereotype" />
+
+<util:list list-class="java.utiL.ArrayList" id="temp">
+	<value>Lugknow(/value>
+	<value>Delhi</value>
+	<value>Kanpur</value>	
+	<value>My City</value>	
+
+</util:list>
+
+</beans>
+
+---------------------------------------------------------------------------------------
+package com.springcore.stereotype;
+public class Demo {
+
+}
+

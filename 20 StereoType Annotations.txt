@@ -1,0 +1,147 @@
+why we were using <bean /> :to tell spring container to create objects
+
+
+what class object needed? specified in bean
+
+after spring container creates object -> we use getBean()
+
+What used above? XML + <bean/>
+_______________________________________________________________________
+
+Stereotype Annotations (avoid <bean/>)
+
+
+a.1) @Component Annotation
+
+
+@Component
+Class Student
+{
+
+
+
+}
+
+a.2) specify class is in which package
+
+<context:component-scan base-package=" "/ >
+
+
+All classes+subpackages inside the given package --> will be scanned by @Component
+
+___________________________________________________________________________________
+
+a.3) how to create objects?
+student variable is mapped to classname Student (CamelCase)
+
+
+
+
+@Component
+Class Student
+{
+
+
+
+}
+Student student = new Student();
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+a.3.1) Create Student.java,Test.java,Stereoconfig.xml
+a.3.2) specify class path in context	  
+a.3.3) Instead of declaring bean, add @Component on Student.java
+		@component will map class Student and create bean named student
+	//can also change name: for ex @Component("ob")
+		//just change bean name also-> when getting
+	
+
+a.3.4) specify package in application context with "/"
+a.3.5) How to get? getBean -> provide bean name student
+
+		Student student = con.getBean("student",Student.class);
+		System.out.println(student);
+	>Output:
+	Student [studentName = null, city=null]
+
+//no values provided to object
+
+a.3.6) How to provide values to object? @Value for individual member fields
+	@Value("Durgesh Tiwari")
+	private String studentName;
+
+	@Value("Luckonw")
+	private String city;	
+
+
+a.3.7) Run Test.java again
+Student [studentNameiburgesh Tiwari, city=Lucknow
+
+
+What objective achieved? object not provided in xml, but using annotation
+
+All beans inside package will be scanned
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+TEST.java
+package com.springcore.stereotype;
+public class Test {
+public static void main($tring[] args) {
+	
+
+	ApplicationContext con:
+		new ClassPatthlApplicationContext("com/springcore/stereotype/stereoconfig.xml");
+	
+	Student student = con.getBean("ob",Student.class);
+	System.out.println(student);
+}
+}
+
+___________________________________________________________________________________
+Stereoconfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/Zeel/XMLSchema—instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<context : component- scan base-package="com.springcore.stereotype" />
+
+
+</beans>
+
+
+___________________________________________________________________________________
+Student.java
+
+package com.springcore.stereotype;
+
+@Component
+public class Student {
+	@Value("Durgesh Tiwari")
+	private String studentName;
+
+	@Value("Luckonw")
+	private String city;
+ 	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city; I
+	}
+@Override
+public String toString() {
+	return "Student [studentName=" + studentName + ", city=" + city + "I
+}
+}

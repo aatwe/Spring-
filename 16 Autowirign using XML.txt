@@ -1,0 +1,227 @@
+
+Create new package ->com.springcore.auto.wire
+
+Create 2 classes Employee and address
+	Employee depended on address
+
+
+a.1) Create class Emp	//Uses Autowiring
+a.2) Create Address class	//Uses setter injection
+a.3) paste autoconfig.xml in your package
+a.4)  declare bean address of Address class in autoconfig.xml -> inject this bean
+a.5) inject this bean -> add 2 property values street and city //as in Address class	
+a.6)  declae bean emp1 of Emp class in autpconfig.xml -> autowire this bean
+a.7) autowire this bean --> //autowire="byName"
+		when creating object of Emp class , spring container will check in Emp class
+			since var Address address -> will search for address named variable in autoconfig.xml
+				once found -> inject bean addres of class Address
+					into Emp member var: Address address
+
+		conclusion: bean name and refernce variable name is same
+
+
+a.8) Create Test class
+	create appliaction context
+	now can get Emp object from container from emp1 bean using getBean()
+
+	Emp emp1=context.getBean("emp1", Emp.class)		//emp1 = bean, Emp.class = Type
+										//store in emp1 object
+										//since writing Emp.class //dont have to type cast
+
+	print emp1 object		//Check if emp1 is storing the object values from bean
+
+	
+a.9) Check Output
+Emp [address=Address [street=Temp Street, city=Delhi]
+
+
+CONCLUSION: searches bean with same name as reference vavr
+Autowiring done byName
+Advantage: we didnt use pschema,cschema or property injection
+we didnt specify to put address bean object in emp1 bean
+
+How it did autoconfig?
+bean="address" --> search for Address address (reference w same name)
+
+it found bean address ->put all properties and initialized Emp class
+
+
+Q) what if we change name address -> address1? auto wiring used + seach container by name -> didnt find bean with name reference var
+		-> output:null
+>Output:
+Emp [address=null]
+//
+
+
+
+Q) what if autowire="byType"? searches bean with same type as reference var
+
+1) 
+<bean class="com.springcore.auto.wire.Address" name= "Address">
+	<property name="street" value="Temp Street"	/>
+	<property name="street" value="Temp Street"	/>
+.</beans>
+
+2)
+<bean class="com.springcore.auto.wire.Address" name= "Address">
+	<property name="street" value="Temp Street"	/>
+	<property name="street" value="Temp Street"	/>
+.</beans>
+
+
+both above will work  1 OR 2
+why?both bean use same type: com.springcore.auto.wire.Address
+
+>Check Output
+Emp [address=Address [street=Temp Street, city=Delhi]
+
+
+Q)Note: if use both bean 1 and 2
+
+>Exception : error when creating bean emp1
+	expected single matching bean, 2 found
+
+Solution: change name
+1) 
+<bean class="com.springcore.auto.wire.Address" name= "Address">
+	<property name="street" value="Temp Street"	/>
+	<property name="street" value="Temp Street"	/>
+.</beans>
+
+2)
+<bean class="com.springcore.auto.wire.Address" name= "Address1">
+	<property name="street" value="Temp Street"	/>
+	<property name="street" value="Temp Street"	/>
+.</beans>
+
+
+10) Try log printing  setAddress setter of Emp class
+>Output:	//no matter if using byType or byName
+Setting value		//called when injection + autowiring
+
+Emp [address=Address [street=Temp Street, city=Delhi]
+
+
+
+
+
+
+
+
+
+
+
+
+Q) Autowiring by constructor? calls parameterized constructor in Emp class
+
+
+<bean class="com.springcore.auto.wire.Emp" name="emp1" autowire="constructor"}/>
+
+
+checks for name
+
+
+____________________________________________________________
+Conclusion:
+constructor: calls constructor -> looks fo bean
+byName :setter called , check name
+byTpye :			, check type 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Emp.java
+
+
+public class Emp {
+private Address address;
+public Address getAddress() {
+return address;
+}
+- public void setAddress(Address address) {
+System.out.println("Setting value");
+this.address = address;
+}
+- public Emp() {
+SUPer(){
+// TODO Auto—generated constructor stub
+}
+
+public Emp(Address address) {
+Super();
+this.address = address:	
+System.out.println("inside constructor");
+}
+
+@Override
+public String toString() {
+
+return "Address [street=" + street + ", city=" + city + "
+}
+}
+
++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+public class Address { I
+private String street; i
+private String city;
+public String getStreet() {
+return street;
+
+}
+
+public void setStreet(String street) {
+this.street = street;
+
+}
+
+public String getCity() {
+return city;
+
+}
+
+public void setCity(String city) {
+this.city = city;
+
+}
+
+@Override *-
+public String toString() {
+	return "Emp maddressz" + address + "1";
+
+}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+autoconfig.xml
+
+<?xml version="1.0" encoding="UTF—8"?>
+
+e<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/ZQQI/XMLSChema—instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http5//www.springframework.org/sChemo/context/spring-context.xsd">
+
+
+<bean class="com.springcore.auto.wire.Address" name= "Address">
+	<property name="street" value="Temp Street"	/>
+	<property name="street" value="Temp Street"	/>
+.</beans>
+
+
+<bean class="com.springcore.auto.wire.Emp" name="emp1" autowire="byName"}/>
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test.java
+
+package com.springcore.auto.wire;
+import org.springframework.context.support.ClassPatthlApplicationContext3
+public class Test {
+	public static void main(String[] args) {
+	
+	ApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/auto/wire/autoconfig.xml");
+	Emp emp1 = context.getBean("emp1",Emp.class);
+	System.out.println(emp1);
+}
+}

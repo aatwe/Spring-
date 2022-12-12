@@ -1,0 +1,111 @@
+a.1) Add @Autowired on Address address
+	address stored bean object
+
+a.2) add <context:annotation-config /> on config.xml
+//name of <bean class='com.springcore.auto.wire.annotation.Addréss" name="temp"> doesnt matter
+
+>Output still 
+Emp [address=Address [street=Temp Street, city=De1hi]]
+
+a.3) Create another bean temp2
+ <bean class='com.springcore.auto.wire.annotation.Addréss" name="temp">
+<property name="street" value="T€mp Street" />
+<property name="city" value="DeLhi" />
+</bean>
+
+
+a.4) now that we have 2 beans with different name
+Test -> run -> error:  expected sinlge bean, found multiple
+
+
+
+Solution: do by name
+Add @Qualifier("temp2")	//input arg: bean name
+
+
+>Output:
+Emp [address=Address [street=Second Street, city=Lucknow]]
+
+Add @Qualifier("temp")	//input arg: bean name
+>Output:
+Emp [address=Address [street=Temp Street, city=Delhi]]
+
+
+a.5) What if we use non existing bean
+@Qualifier("temp3")
+//no such bean found exception
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test.java
+
+package com.springcore.auto.wire.annotation;
+import org.springframework.context.ApplicationContext;{
+
+
+public class Emp {
+
+	public static void main($tring[] args) {
+		
+		ApplicationContext context = new ClassPatthlApplicationContext("com/springcore/auto/wi
+		Emp empl = contbxt.getBean("emp1", Emp.c1ass);
+		System.out.print1n(emp1);
+
+	}
+}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+Emp.java
+
+package com.springcore.auto.wire.annotation;
+import org.springframework.beans.factory.annotation.Autowired;
+public class Emp {
+
+@Autowired 
+@Qualifier("temp2")
+private Address address;
+public Address getAddress() {
+return address;
+}
+public void setAddress(Address address) {
+System.out.println("Setting value");
+this.address = address;
+}
+public Emp() {
+super();
+// TODO Auto-generated constructor stub
+}
+
+public Emp(Address address) {
+	super();
+	this.address = address;	
+	System.out.println("inside constructor");
+}
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+config.xml
+
+<?xml version="1.6" encoding="UTF—8"?>
+-<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.M3.org/zeel/Rruschema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/Spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<context:annotation-config />
+
+
+» <bean class='com.springcore.auto.wire.annotation.Addréss" name="temp">
+<property name="street" value="Temp Street" />
+<property name="city" value="DeLhi" />
+</bean>
+
+ <bean class='com.springcore.auto.wire.annotation.Addréss" name="temp2">
+<property name="street" value="Second Street" />
+<property name="city" value="Lucknow" />
+</bean>
+
+<bean class="com.springcore.auto.wire.annotation.Emp" name="emp1" />
+</beans>

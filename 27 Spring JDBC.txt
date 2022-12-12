@@ -1,0 +1,96 @@
+Objective: How Spring JDBC helps to connect with database
+
+Web has lots of data -> Spring JDBC, Spring ORM modules vimp
+
+
+
+a.1)What is spring jdbc? how to connect with database + execute SQL queries
+					built on top of jdbc
+
+a.2) Why spring jdbc over jdbc? preferred
+    a.2.1) jdbc has lots of code
+		for ex
+		Connection open
+		statement
+		execute
+		connection close
+
+    a.2.2) Had to exception handle SQLException
+			(try{}cartch{})
+		why? SQLException is checked exception //needs try catch	 
+		While Spring JDBC -> Unchecked  exception
+  
+    a.2.3)	   
+
+
+		
+
+a.2) Uses what class? JdbcTemplate
+	we will use its methods
+
+
+
+
+a.3) What is JDBC? Api to perform(insert,delte,fetch,update) operations w database
+
+IMPLEMENT
+
+b.1) create JdbcTemplate class object
+	class contains property: dataSource
+
+b.3) What is dataSource? Interface
+	What interface contains? 
+		database info: url,username,pw,driverclass	
+		//basically all info needed to connect to DB
+
+	What interface takes input? JdbcTemplate object
+
+	How to input DataSource object into dataSource?
+	implementation class of interface DataSource ===>DriverManagerDataSource
+		DriverManagerDataSource implements DataSource
+
+		create DriveManagerDataSource object in dataSource
+	     inject object of DriverManagerDataSource class in dataSource property of JdbcTemplate class
+
+	What DriverManagerDataSource needs? 4 properties
+		driverClassName
+		url	//where database installed //protocol,subprotocol,location	
+		username=?
+		password
+
+
+Basically:
+ dataSource contains 		: All DB related info
+ JdbcTemplate contains	: Database queries
+
+
+
+
+Objective:
+c)		create DriveManagerDataSource object in dataSource
+	     inject object of DriverManagerDataSource class in dataSource property of JdbcTemplate class
+
+c.1) How to do above? manually / Spring config,beandeclaration,autowiring
+
+
+c.2) declare DriverManagerDataSource using bean
+		input 4 properties
+
+c.3) declare dataSource using bean
+		inject DriverManagerDataSource object in dataSource
+
+c.4) create JdbcTemplate object
+
+c.5) fire queries
+	insert,select,delete,update
+
+c.4) inject dataSource in dao ->
+
+
+
+++++++++++++++++++++++++++++++++
+Common JdbcTemplate methods->
+
+update( ) —> insert, update, delete
+execute( )-> select queries....l
+	

@@ -1,0 +1,253 @@
+What is SpEL?
+
+we did everything in 1 package
+
+What was: @Value("#{temp}") ? Expression language		//temp injected here	//at runtime value detected from below
+
+("#{expression}")
+
+
+
+where is this variable? in stereoconfig.xml linked with id = temp
+
+<util:list list-class="java.utiL.vector" id="temp">
+	<value>Lucknow</value>
+	<value>Delhi</value> i
+	<value>Kanpur</value>
+	<value>My City</value>
+	
+</util:1ist>
+
+
+
+Q) What can we pass in Spel? 
+	classes
+	variables
+	methods: static methods, object methods
+	Constructors
+	Objects
+	Symbols(char,numeric,operator,keywords,special symbol)  //should return value in expession
+
+
+ConclusiON: SpEL: supports parsing + executing expression
+			how ? @Value annotation
+			how expression evaluated? Spring language supports
+			Other way: Class: Spring expression parser -> can also solve these expressions
+
+
+
+Q) Ex  @value("#{11 + 22}")
+
+>33
+
+
+Q) @value("#{ 8>6 ? 88:55"})
+ 
+>
+
+Implement:
+a.1) 	   Create Demo.java
+		private intx,y;
+	-> Create getter and setter to access variable
+	-> Create toString()
+
+a.2) get object in Test.java
+	.getBean("classname") = .getBean("demo",Demo.class)		//by passing Demo.class no need to type cast 
+
+
+a.3) print d1
+	System.out.println(d1);	
+
+>Output:
+Demo [x=0, y=0]
+
+
+a.4) try putting value in x using @Value
+
+
+@Value("#{22 + 11}")
+private int x;
+
+@Value("#{2+5+56+34}")
+private int y;
+
+
+a.5) 
+TEST:
+Output:
+Demo [x=33, y=97]		//conclusion: expression got solved and stored
+
+
+What else we can use? methods,object, object methods, variables etc
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+How to use expressionParser Class
+			parseExpression("your expression") method	//since we are using  SpelExpressionParser(); API	 can directly give expression 
+				.getValue()
+
+a.6) In Test.java
+
+SpelExpressionParser temp = new SpelExpressionParser();
+Expression expression = temp.parseExpression("22+44");	 
+
+System.out.println(expression.getValue());
+
+
+>Output:
+Demo [x=33, y=97]I
+66
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+a.7) if not above method -> just use @Value("#{2+5+56+34}")
+
+--------------------------------------------------------	
+Demo.java
+package com.springcore.spel;
+import org.springframework.stereotype.Component;
+@Component
+public class Demo {
+
+
+@Value("#{22 + 11}")
+private int x;
+
+@Value("#{2+5+56+34}")
+private int y;
+
+public int getX() {
+return x;
+}
+public void setX(int x) {
+this.x = x;
+}
+public int getY() {
+return y;
+}
+public void setY(int y) {
+this.y = y;
+}
+@Override
+public String toString() {
+	return "Demo [x=" + x + ", y = " + y + "]";
+}
+
+
+------------------------------------------------------------------------------------------------
+
+TEST.java
+package com.springcore.stereotype;
+public class Test {
+public static void main(String[] args) {
+	
+
+	ApplicationContext context = new ClassPatthlApplicationContext("com/springcore/stereotype/stereoconfig.xml");
+	Demo d1 = context.getBean("demo",Demo.class);
+
+	System.out.println(d1);	
+  }
+}
+
+___________________________________________________________________________________
+Stereoconfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/Zeel/XMLSchema—instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<context : component- scan base-package="com.springcore.stereotype" />
+
+
+</beans>
+
+
+___________________________________________________________________________________
+Student.java
+
+package com.springcore.stereotype;
+
+@Component("ob")
+@Scope("prototype")
+public class Student {
+	@Value("Durgesh Tiwari")
+	private String studentName;
+
+	@Value("Lucknow")
+	private String city;
+
+	@Value("#{temp}")
+	public List<String> address;
+
+ 	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city; I
+	}
+
+	public List<String> getAddress() {
+		return address;
+	}
+	
+	public void setAddress(List<String> address) {
+		this.address = address;
+	}
+
+@Override
+public String toString() {
+	return "Student [studentName=" + studentName + ", city=" + city + "I
+}
+}
+
+---------------------------------------------------------------------------------------
+stereoconfig.xml	
+
+<?xml version="1.6" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/zeal/XMLSChema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:util="http://www.springframework.org/schema/utiL"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring~beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/utiL
+http://www.springframework.org/schema/utiL/spring-utiL.xsd
+">
+<context:component-scan
+	base-package="c0m.springcore.stereotype" />
+
+<util:list list-class="java.utiL.ArrayList" id="temp">
+	<value>Lugknow(/value>
+	<value>Delhi</value>
+	<value>Kanpur</value>	
+	<value>My City</value>	
+
+</util:list>
+
+</beans>
+
+---------------------------------------------------------------------------------------
+package com.springcore.stereotype;
+public class Demo {
+
+}
+
+

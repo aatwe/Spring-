@@ -1,0 +1,64 @@
+Why autowiring?
+automatic dependency injection
+less code
+
+Disadvantage: cant use for primitive/string 
+
+a.1) 	What is autowiring?
+	Spring feature where spring injects dependencies automatically
+
+how we did till now? manually
+	<ref bean=""/> 
+	//spring container picked this reference from config file
+
+
+
+a.2) What to provide spring? tell which type of dependency, which name,
+	Spring container will link up and put object on its own
+
+
+a.3) What disadvantage? not used for primitive/string
+	can only use for object
+
+
+Good: we only deal in moving objects	
+
+
+for ex 
+If A class is dependent on B (for object)
+ 
+linking both = wiring
+______________________________________________________________________
+Autowiring
+
+spring container automatically find dependency.
+
+find how? by type/name etc
+
+
+How to do Auto Wiring?
+1) xml
+
+2) annotations
+==========================================================================
+
+a) XML:
+
+Autowiring modes
+
+  a.1) no	: autowiring not enabled
+ 
+  a.2) byName : search dependency and inject by bean name
+
+  a.3) byType : search dependency and inject by type
+
+  a.4) constructor : call constructor to inject dependency 
+
+  a.5) autodetect : //depricated from Spring 3
+
+
+
+b) Annotations
+
+  b.1) @Autowired
+

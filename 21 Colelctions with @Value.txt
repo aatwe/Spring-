@@ -1,0 +1,161 @@
+Objective: insert collections using @Value
+
+a.1) Create util schema
+Add below: in stereoconfig.xml
+
+xmlns:util="http://www.sprianramework.org/schema/uti LI"
+http ://wxw.springframework.org/schema/util	
+http ://www.springframework.org/schema/util/spring-util. xsd
+
+
+a.2) 
+Create standalone collection in stereoconfig.xml
+
+<util:list list-class="java.util.ArrayList" id="temp">
+ <value> Lucknow </value>
+  <value> Delhi <//value>
+   <value> Kanpur </value>
+</util:list>
+
+
+a.3) Where to store object?
+	Use @Value("#{temp}")
+
+temp = util list id
+
+
+a.4) Generate getters and setters in Student.java
+	getAddress() setAddress()
+
+a.5) Test: if object is 
+		System.out.println(student);
+	System.out.println(student.getAddress());
+	System.out.println(student.getAddress().getClass().getName());
+
+>Output:
+Student [studentName=Durgesh Tiwari, city=Lucknow]
+[Lucknow, Delhi, Kanpur]
+java.utih}ArrayList
+
+a.6) //try adding another value
+<value>Kanpur</value>	
+	//also change list-class from ArrayList to vector
+
+>Output:
+Student [studentName=Durgesh Tiwari, city=Lucknow]
+[Lucknow, Delhi, Kanpur,.fly City]
+java. util .Vector '
+
+
+a.7) Similarly use List, Map, properties
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+TEST.java
+package com.springcore.stereotype;
+public class Test {
+public static void main(String[] args) {
+	
+
+	ApplicationContext con:
+		new ClassPatthlApplicationContext("com/springcore/stereotype/stereoconfig.xml");
+	
+	Student student = con.getBean("student",Student.class);
+	System.out.println(student);
+	System.out.println(student.getAddress());
+	System.out.println(student.getAddress().getClass().getName());
+		
+}
+}
+
+___________________________________________________________________________________
+Stereoconfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/Zeel/XMLSchema—instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.Xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<context : component- scan base-package="com.springcore.stereotype" />
+
+
+</beans>
+
+
+___________________________________________________________________________________
+Student.java
+
+package com.springcore.stereotype;
+
+@Component("ob")
+public class Student {
+	@Value("Durgesh Tiwari")
+	private String studentName;
+
+	@Value("Lucknow")
+	private String city;
+
+	@Value("#{temp}")
+	public List<String> address;
+
+ 	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city; I
+	}
+
+	public List<String> getAddress() {
+		return address;
+	}
+	
+	public void setAddress(List<String> address) {
+		this.address = address;
+	}
+
+@Override
+public String toString() {
+	return "Student [studentName=" + studentName + ", city=" + city + "I
+}
+}
+
+---------------------------------------------------------------------------------------
+stereoconfig.xml	
+
+<?xml version="1.6" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/zeal/XMLSChema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:util="http://www.springframework.org/schema/utiL"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring~beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/utiL
+http://www.springframework.org/schema/utiL/spring-utiL.xsd
+">
+<context:component-scan
+	base-package="c0m.springcore.stereotype" />
+
+<util:list list-class="java.utiL.ArrayList" id="temp">
+	<value>Lugknow(/value>
+	<value>Delhi</value>
+	<value>Kanpur</value>	
+	<value>My City</value>	
+
+</util:list>
+
+</beans>
