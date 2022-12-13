@@ -1,0 +1,376 @@
+a) Spring container contains JdbcTemplate object
+
+	we will access using name = "jdbcTemplate"
+
+	a.1) Create applicationContext
+		ApplicationContext context = new ClassPatthlApplicationContext("com/spring/jdbc/config.xml");
+
+	a.2) .getBean()
+		JdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
+
+	a.3) insert and Fire query
+		// insert query
+
+		String query = "insert into student(id,name,city) values(?,?,?)";
+
+			// fire query
+	
+		int result = template.update(query, 456, "Uttam Kumar", "Kanpur");
+		System.out.println("number of record inserted.." + result);
+
+
+	Objective: Achieved: SQL Query fired, data inserted in table columns
+	What advantage?
+		We didnt close connection
+		we fetch statement
+		All and everything done by JdbcTemplate template
+
+	>Output
+		My program started
+		number of reccords inserted...1
+
+	a.4) Check database
+		MySQL Command Line Client
+
+	mysql> clear
+	     > use spring jdbc;
+	     > select * from student;
+		+-----+--------—----—--+--------+
+		I id  I name 		 I city   I
+		I 222 I Durgesh Tiwari I Delhi	     I 
+		+-----+----------------+--------+
+		I 4S6 I Uttam Kumar 	 I Kanpur I
+		+----—+-------—-—-----—+--------+
+		2 rows in set (6.66 sec)
+
+	//ConclusiON: program inserted data (query, 456, "Uttam Kumar", "Kanpur"); into DB
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+package com.spring.jdbc;
+public class Student {
+
+	private int id;
+	private String name;	
+	private String city;
+	public Student() {
+		
+	}
+	public Student(int id, String name, String city) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.city = city;
+	}
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+	@Override
+	public String toString() {
+	return "Student [id=" + id + ", name=" + name + ", city=" + city + "]";
+	}
+}
+--------------------------------------------------------------------------------
+App.java
+
+package com.spring.jdbc;
+
+public class App
+
+{
+	public static void main( String[] args )
+	{
+		System.out.println("my program started");
+
+		ApplicationContext context = new ClassPatthlApplicationContext("com/spring/jdbc/config.xml");
+		JdbcTemplate template = context.getBean("jdbcTemplate", JdbcTemplate.class);
+
+
+		String query = "insert into student(id,name,city) values(?,?,?)";
+
+			// fire query
+	
+		int result = template.update(query, 456, "Uttam Kumar", "Kanpur");
+		System.out.println("number of record inserted.." + result);
+
+	
+	}
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+b) Method 2
+
+b.1) download SQLYog
+
+b.2) File -> New connection 
+		name: newlocal
+		mySQL host address: localhost
+		username: root
+
+		password:
+		port : 3306
+	-> Connect
+
+b.3) 
+jdbc
+  Tables
+   Student -> right click -> open table in new tab
+	Columns
+	Indexes
+
+
+What advantage of SQL Yog? no need for command prompt, can give sql from here
+
+
+
+b.4) What change in program to use SQL Yog
+
+
+ b.4.1) 
+		Create interface StudentDao in interface com.spring.jdbc.dao
+	 	Create StudentDaoImpl.java in 		   com.spring.jdbc.dao
+	      Name: StudentDao
+	
+
+
+
+ b.4.2) Create com.spring.jdbc.entites
+	move Student.java 
+
+com.spring.jdbc.entites
+	Student.java 
+com.spring.jdbc.dao;
+	StudentDao.java //interface
+	StudentDaoImpl  //implements interface
+
+
+ b.4.3) pass Student student object in insert in interface StudentDao
+	   implement insert() in StudentDaoImpl.java
+
+ b.4.4) insert id,name,city of Student.java and pass into Student student to be inserted into Database
+
+//insert()
+		How to insert class fields into DB from StudentDaoImpl.java?
+		create private JdbcTemplate jdbcTemplate;
+		create getter setter for the same
+		use jdbcTemplate to insert
+
+		paste query in insert() in StudentDaoImpl
+		update jdbcTemplate using update(query,id,name,city)
+		store result in r
+		return r
+
+
+b.4.5) 	put object in jdbcTemplate
+		Declare StudentDaoImpl in bean
+	     class = studentDaoImpl class
+	     name = studentDao
+		ref=  previous bean name
+
+		<bean class="com.spring.jdbc.dao.StudentDaoImpL" name=‘studentDao">
+	<property name="jdbcTempLate" ref="jdbcTempLate" />
+	</bean>
+
+	Now	When studentDao object will be created -> inside JdbcTemplate jdbcTemplate variable -> container  will put prevous bean's object
+	Now we can directly use StudentDaoImpl object
+
+	//Now no need to use below in App.java
+	JdbcTemplate template = context.getBean("jdbcTemplate", JdbcTemplate.class); in App.java
+	//insert query
+	String query = "insert into student(id,name,city) values(?,?,?)";
+	// fire query
+	int result = template.update(query, 24S, "Menish Kumar", "Kanpur");
+	System.out.println("number of record inserted.." + result);
+	
+
+
+b.4.6) In App.java
+		Instead now get studentDao object directly instead of jdbcTemplate object
+		context.getBean("studentDao, StudentDao.class")
+								---interface---
+		Store object in StudentDao studentDao
+		but, we getting from (bean of class StudentDaoImpl name = studentDao) and storing in StudentDao type?
+		why works? StudentDao interface is parent of StudentDaoImpl class
+
+		
+	 //How to save data?
+		Student student = new Student();
+		student.setId(666);
+		student.setName("John");
+		student.setCity("Lucknow");
+
+	//send this data into StudentDao studentDao using insert()
+	int result = studentDao.insert(student);
+	System.out.println("student added" +result);
+			
+
+
+OBJECTIVE ACHIEVED:
+	General principle:
+		1) create interface StudentDao
+			create implementation class: StudentDaoImpl implements StudentDao
+				JdbcTemplate jdbcTemplate	//use this to update() query
+				insert()
+
+			Value returned is put using bean
+		<bean class="com.spring.jdbc.dao. tudentDaoImpL" name="studentDao">
+		<property name="jdbcTempLate" ref="jdbcTempLate" />
+		</bean>
+		
+		2) create Application context in App.java
+		   context.getBean()
+		   get studentDao object
+
+		//Specify what values to put using Student class
+
+		Student student = new Student();
+		student.setId(666);
+		student.setName("John");
+		student.setCity("Lucknow");
+
+
+		3) Run App.java as java application
+
+>output
+My Program started ....
+student added 1
+
+
+
+		4) Check database
+		id		name	 		  city
+		222		Durgesh Tiwari	  Delhi
+		245		Manish Kumar	  Kanpur	
+		456		Uttam Kumar	  Kanpur
+		666		John			  Lucknow		//inserted in database
+
+//What advantage of using Dao
+All frontend user has to do is use objectDao and pass it object in insert()
+			---> create StudentDao object -> objectDao.insert(object);
+
+		If any changes => just have to change StudentDaoImpl.java 
+					//interface will remain same
+
+
+
+---------------------------------------------------------
+StudentDao.java
+
+package com.spring.jdbc.dao;
+
+public interface StudentDao {
+	public int insert(Student student);
+		
+}
+
+----------------------------------------------------------
+StudentDaoImpl.java
+
+	package com.spring.jdbc.dao;
+	
+	import org.springframework.jdbc.core.JdbcTemplate;
+	
+	import com.spring.jdbc.entites.Student;
+	
+	public class StudentDaoImpl implements StudentDao {
+		private JdbcTemplate jdbcTemplate;
+	
+		public int insert(Student student) {
+			String query = "insert into student(id,name,city) values(?,?,?)";
+			int r =this.jdbcTemplate.update(query,student.getId(),student.getName(),student.getCity());
+			return r;
+		}
+		public JdbcTemplate getJdbcTemplate() {
+			return jdbcTemplate;
+		}
+		public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+			this.jdbcTemplate = jdbcTemplate;
+		}
+
+
+
+---------------------------------------------------------------------------------------
+
+config.xml
+
+<?xml version= "1 . 9 " encoding= "UTF-8 "P >
+<beans xmlns: "http : //i-/ww. springframework . org/schema/beans "
+	xmlns : xsi= "http://www.i-13 . org/2691 /XML$chema- instance "
+	xmlns : context= "http://i«1ww. springframework . org/schema/ context "
+	xmlns : p= "http : //www. springframework . org/schema/p "
+	xsi : schema Location: "http : //www. springframework . org/ 5 chema/ beans
+	http : //www. springframework . org/ 3 chema/ beans/ spring -beans . xsd
+	http : //www. springframework . org/ 5 chema/ context
+	http : //www. springframework . org/schemo/context/spring- context . xsd ">
+
+	<bean class="org.springframeworlejdbc.datasource.DriverManagerDataSource" name="ds" >
+		<property name= "driverCLassName" value="com.mysqL.jdbc.Driver" />
+		<property name= "url" value="jdbc:mysql://Localhost:" />
+		<property name="username" value="root"/>
+		<property name="password" value="root"/>		
+
+	</bean> 
+	
+
+	<bean class="org.springframework.jdbc.core.JdbCTempLate" name="jdbcTempLate" >
+		<property name="dataSource">
+			<ref bean="" />
+		</property>
+	</bean>	
+
+	<bean class="com.spring.jdbc.dao.StudentDaoImpL" name=‘studentDao">
+	<property name="jdbcTempLate" ref="jdbcTempLate" />
+	</bean>
+
+</beans>
+
+---------------------------------------------------------------------------------------
+
+App.java
+
+package com.spring.jdbc;
+
+public class App
+
+{
+	public static void main( String[] args )
+	{
+		System.out.println("my program started");
+
+		ApplicationContext context = new ClassPatthlApplicationContext("com/spring/jdbc/config.xml");
+		StudentDao studentDao = context.getBean("studentDao", StudentDao.class);
+
+		Student student = new Student();
+		student.setId(666);
+		student.setName("John");
+		student.setCity("Lucknow");
+
+		int result = studentDao.insert(student);
+	
+		System.out.println("student added" +result);
+
+
+	}
+}

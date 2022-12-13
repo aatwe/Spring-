@@ -1,0 +1,328 @@
+a.1) File -> New  -> Maven
+else File -> New -> Other -> Maven Project (easy to add dependencies in Maven project, maven manages all dep)
+								else -> add own jar files
+
+
+a.2) Select project folder ->
+	Catalog : Internal
+	Artifact Id : maven-archetype-quickstart
+	GroupId: package
+	ArtifactId :
+	Finish
+
+a.3) Project create (internet on) by default dependencies integerated
+
+a.4) Open pom.xml	
+
+$5 springjdbc
+> src/main/java
+> src/test/java
+) JRE System Library [1255-15]
+> Maven Dependencies
+> src
+> target
+> pom.xml
+
+
+a.5) Paste spring core and spring context dependency in pom.xml in <dependencies>
+
+-< l - - https : //mvnrepository . com/artifact/org . springframework/spring-core - - >
+(dependency>
+(groupId>org.springframework</groupId>
+(artifactId>spring-core</artifactld>
+(version>S.2.3.RELEASE(/version>
+(/dependency>
+(!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+(dependency>
+(groupId>org.springframework</groupId>
+(artifactId>spring-context</artifactId>
+(version>5.2.3.RELEASE(/version>
+</dependency>—
+
+
+a.6) rightclick project folder -> maven -> update project
+
+
+b.1) google spring jdbc maven
+b.2) find same version as spring-core
+b.3) paste in dependencies
+
+	//now we have 3 dep
+	spring-core
+	spring-context
+	spring-jdbc
+
+b.4) google mysql connector maven
+	use same version -> copy maven code
+	paste in dependencies
+
+
+b.5)	//now we have 4 dep
+	spring-core
+	spring-context
+	spring-jdbc
+	mysql-connector
+
+b.6) Search JdbcTemplate class
+
+in this class //constructor
+	JdbcTemplate(Datasource dataSource){
+		setDataSource(dataSource);
+		afterPropertiesSet();
+}
+
+
+DataSource interface
+
+public interface DataSource extends CommmonDataSource, Wrapper {}
+
+
+Conclusion: when creating JdbcTemplate object -> must input DataSource object
+
+
+Note: if jdk-14 not visible
+project folder -> right click -> properties -> Java build path -> JRE System library -> remove
+	Add library -> JRE System Library ->(jdk-14) Next -> Workspace -> Finish
+
+---------------------------------------------------------------------------------------
+Objective: Create configuration file, declare driver manager data source, declare jdbc template bean
+Create database tables, 
+
+//have integerated dependencies
+
+c.1) Open database. (Which DB using?MySQL 5.7)
+
+c.2) Access MySQL Server
+	How to access mySQL server?
+	c.2.1) MySQL 5.7 Command Line Client / Workbench / SQLYog
+
+	c.2.2) Enter password
+
+	c.2.3) Create database
+			>show databases
+			>create database springjdbc
+		>Query OK, 1 row affected	
+
+			>show databases
+			springjdbc
+			//created
+
+	c.2.4) Create Table with 3 col
+			>use springjdbc
+			>create table student(id int primary_key, name varchar(100) not null, city varchar(200));		//id int primary_key auto_inc //can write
+
+		
+			>show tables
+			+----—---——————-——-————+
+			I Tables_in_springjdbc I
+			+----------------------+
+			| student I
+			+-------—-----—--------+
+
+	c.2.5) Insert data into table
+		insert into student(id,name,city) values(222,'Durgesh Tiwari', "Delhi");
+		>Query OK, 1 row affected
+
+
+	c.2.6) select * from student;
+
+		+-----+-———---—------—-+-------+
+		I id  I name		 I city  I
+		+-----+----------------+-------+
+		I 222 I Durgesh Tiwari I Delhi I
+		+---——+---------------—+--—--—~+
+		
+		1 row in set (6.98 sec)
+
+	c,2.7) Check columns
+		desc student;
+	+----——-+———--------—--+-—-—--+-----+---------+-------+
+	I Field I Type 		 I Null I Key  I Default I Extra I
+	+--——---+--------------+—-----+---—-+-------——+---—---+
+	| id    I int(11) 	 I NO   I PRI  I NULL    I 	     |
+	I name  I varchar(166) I NO   	    I NULL    I  	I
+	| city  I varchar(209) I YES         I NULL    I  	|
+	+-—--—--+-----------—--+------+-----+------——-+------—+
+
+	//3 rows in set
+	
+
+
+d) 
+
+d.1) Create Student.java
+	  create getter and setter
+	  create toString()
+	
+	
+
+d.2) Create App.java
+	 create jdbctemplate object using dependency injection
+		create config file config.xml
+		what this contains? all config and bean declaration
+
+
+d.3) create config.xml 
+
+	d.3.1) declare bean with class="org.springframework.jdbc.core" and name =jdbcTemplate
+		  Ctrl+shift+E -> jdbcTemplate
+			copy package org.springframework.jdbc.core
+		
+	d.3.1.1) set property data source
+			how to set property? inject or directly
+			how to inject?
+				1) property attribute
+				2) pschema
+			
+	  1) Using property attribute
+		<bean class="org.springframework.jdbc.core.JdbCTempLate" name="jdbcTempLate" >
+		<property name="dataSource">
+		<ref bean="" />
+		</property>
+		</bean>	
+	
+	  2) Using pschema
+		Add below namespace:
+			xmlns :p="http://www.springframework.org/schema/p "
+	
+	
+		insert object in bean: 
+		<bean class:"org.springframeworkjdbc.core.JdbcTemplate"
+		name="jdbcTempLate" p:dataSource-ref="ds" /> 
+	
+
+
+	d.3.1.2) declare another bean for class DriverManagerDataSource , similarly find class
+			specify property driverClassName, value = "com.mysqL.jdbc.Driver"//my SQL driver class name		
+													//if using oracle / DB2/Sybase etc use respective
+
+			specify property url = Where DB installed? Your DB url connection string = jdbc:mysql://localhost:3306/springjdbc"
+													--protocol--subprotocol--ip address of system on which DB--portno.---DB name--						
+	
+			specify property username and value
+				<property name="username" value="root"/>
+
+			specify property password and value
+				<property name="password" value="root"/>		
+
+	<bean class="org.springframeworlejdbc.datasource.DriverManagerDataSource" name="ds" >
+		<property name= "driverCLassName" value="com.mysqL.jdbc.Driver" />
+		<property name= "url" value="jdbc:mysql://Localhost:" />
+		<property name="username" value="root"/>
+		<property name="password" value="root"/>		
+
+	</bean> 
+	
+
+	<bean class="org.springframework.jdbc.core.JdbCTempLate" name="jdbcTempLate" >
+		<property name="dataSource">
+			<ref bean="" />
+		</property>
+	</bean>	
+	
+	
+Conclusion: object ds -> goes into jdbcTemplate 	
+		create application context  -> call getBean(jdbcTemplate) //pass jdbcTemplate in that
+	
+
+
+	e.1) Run queries by using jdbcTemplate
+		(Fire Queries -> CRUD Operations)
+
+
+
+package com.spring.jdbc;
+public class Student {
+
+	private int id;
+	private String name;	
+	private String city;
+	public Student() {
+		
+	}
+	public Student(int id, String name, String city) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.city = city;
+	}
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+	@Override
+	public String toString() {
+	return "Student [id=" + id + ", name=" + name + ", city=" + city + "]";
+	}
+}
+--------------------------------------------------------------------------------
+App.java
+
+package com.spring.jdbc;
+
+year:
+
+* Hello world!
+
+*/
+
+public class App
+
+{
+public static void main( String[] args )
+{
+
+System.out.println( "Hello World!" ); I
+
+}
+}
+---------------------------------------------------------------------------------------
+
+config.xml
+
+<?xml version= "1 . 9 " encoding= "UTF-8 "P >
+<beans xmlns: "http : //i-/ww. springframework . org/schema/beans "
+	xmlns : xsi= "http://www.i-13 . org/2691 /XML$chema- instance "
+	xmlns : context= "http://i«1ww. springframework . org/schema/ context "
+	xmlns : p= "http : //www. springframework . org/schema/p "
+	xsi : schema Location: "http : //www. springframework . org/ 5 chema/ beans
+	http : //www. springframework . org/ 3 chema/ beans/ spring -beans . xsd
+	http : //www. springframework . org/ 5 chema/ context
+	http : //www. springframework . org/schemo/context/spring- context . xsd ">
+
+	<bean class="org.springframeworlejdbc.datasource.DriverManagerDataSource" name="ds" >
+		<property name= "driverCLassName" value="com.mysqL.jdbc.Driver" />
+		<property name= "url" value="jdbc:mysql://Localhost:" />
+		<property name="username" value="root"/>
+		<property name="password" value="root"/>		
+
+	</bean> 
+	
+
+	<bean class="org.springframework.jdbc.core.JdbCTempLate" name="jdbcTempLate" >
+		<property name="dataSource">
+			<ref bean="" />
+		</property>
+	</bean>	
+
+
+</beans>
