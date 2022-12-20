@@ -1,0 +1,155 @@
+id  name   		city
+222 Durgesh Tiwari 	Delhi
+245 Raj Kumar 		Lucknow
+456 Uttam Kumar 		Lucknow
+666 John			Lucknow
+(NULL)(NULL) 		(NULL)
+
+
+Objective: How to remove data?
+
+a) Add delete() in StudentDao
+
+b) implement delete() in StudentDaoImpl.java	//input: studentId
+	Create query to delete what id we pass
+		to delete row whose id = "?"
+		pass query and studentId	 in update() method in jdbcTemplate	//studentId will get injected in query
+		store in r
+		return r
+
+c) Pass delete in studentDao in App.java
+
+	int result = studentDao.delete(666);
+	System.out.println("deleted" +result);
+
+	//Run
+
+d) Check
+>
+My Program started.......
+deleted 1
+
+//Verify in database
+
+id  name   		city
+222 Durgesh Tiwari 	Delhi
+245 Raj Kumar 		Lucknow
+456 Uttam Kumar 		Lucknow
+(NULL)(NULL) 		(NULL)		//John Gone
+
+
+shows NULL NULL NULL
+
+
+e) Implement again
+	int result = studentDao.delete(245);
+	System.out.println("deleted" +result);
+
+My Program started.......
+deleted 1
+
+
+
+f) How to takethis value from user instead of hardcoding ?
+	Use scanner  / bufferReader
+	
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+1) StudentDao.java
+package com.spring.jdbc.dao;
+import com.spring.jdbc.entites.Student;
+public interface StudentDao {
+public int insent(Student student);
+public int change(Student student);
+public int delete(int studentld);
+
+
+}
+
+
+2) StudentDaoImpl.java
+
+package com.spring.jdbc.dao; 
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.spring.jdbc.entites.Student;
+public class StudentDaoIle implements StudentDao {
+private JdbcTemplate jdbcTemplate;
+public int insert(Student student) {
+
+
+// insert query
+String query = "insert into student(id,name,city) values(?,?,?)";
+int r = this.jdbcTemplate.update(query, student.getId(), student.getName(), student
+return r;
+}
+public int change(Studeht student) {
+// updating data
+String query = "update student set name=? , city=? where id=?";
+int r = this.jdbcTemplate.update(query, student.getName(), student.getCity(), stude
+return r;
+}
+
+
+public int delete(int studnetId) {
+	String query= "delete from student where id = ?";
+	int r = this.jdbcTemplate.update(query,studentId);			//studentId will inject into query
+	return r;
+}
+
+public Student getStudent(int studentId) {
+// select single student data
+	String query = "select * from student where id=?";
+	RowMapper<Student> rowMapper = new RowMapperImp1();
+	Student student = this.jdbcTemplate.queryForObject(query, rowMapper, studentId]
+	
+	return student;
+}
+public JdbcTemplate getJdbcTemplate() {
+	return jdbcTemplate;
+}
+public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+	this.jdbcTemplate = jdbcTemplate;
+}
+
+
+//App.java
+
+paCKage com.spring.jdbc;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.spring.jdbc.dao.StudentDao;
+import com.spring.jdbc.entites.Student;
+
+public class App {
+
+	public static void main(String[] args) {
+	System.out.println("My Program started.........");
+	// Spring JdbC=> JdbcTemPlate
+
+	ApplicationContext context = new ClassPatthlApplicationContext("com/spring/jdbc/co
+
+	StudentDao studentDao = context.getBean("studentDao",StudentDao.class);
+
+/*	INSERT
+	Student student=new Student();
+	student.setId(666);
+	student.setName("John");	
+	student.setCity("Lucknow");
+	int result = studentDao.insert(student);
+
+	System.out.println("student added "+result); 
+*/	
+/*	UPDATE
+	Student student = new Student();
+	student.setId(245);
+	student.setName("Raj kumar");
+	student.setCity("Lucknow");
+	int result = studentDao.change(student);
+	System.out.println("data changed" +result);
+
+*/
+	//DELETE
+	int result = studentDao.delete(666);
+	System.out.println("deleted" +result);

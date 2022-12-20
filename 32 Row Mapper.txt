@@ -1,0 +1,438 @@
+Objective: how to select data using Spring JDBC
+
+How? queryForObject() method with jdbcTemplate
+	What input? sql String, rowMapper Object, parameters if any //for parameterized query
+	
+
+
+a) //For single object/rows
+
+public T queryForObject(String sql, RowMapper<T>rowMapper, Object args)
+	//Returns objects of type T
+
+
+b) //For fetching multiple objects/rows
+
+public List<T> query (String sql, RowMapper<T>rowMapper)
+
+	//Returns list of objects of type T
+
+
+c) What is Row Mapper? interface
+	What rowMapper does? converts resultset to class Object
+
+
+	//in jdbc we get output data in : resultSet  //contains rows and column  --> have to traverse using loop
+		-> take data out and put in object
+
+			What output from RowMapper? Object of type T
+			What input to Row Mapper? ResultSet Object
+
+				How to convert ResultSet Object to Class Object
+				c.1) How to pass ResultSet Object to Row Mapper interface?
+						
+					c.1.1) Create implementation class of row mapper type 
+
+					c.1.2) How to find which col to store in which object property?
+							Implementation of row Mapper
+							
+					//Basically RowMapper will convert ResultSet Object to Class Object : using row Mapper Implementaiton
+					//every time we select data, dont have to create object again and again
+						what object?	Class Object
+
+				//What is this? Object Relational Mapping: using Row Mapper 
+				What is ORM? technique
+					why use? create bridge between Object oriented programs --- and relational databases
+			
+					c.1.3) get the object
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PRACTICAL :Select single object
+
+a) create getStudent(int studentId) in StudentDao.java , what input? studentId, What output? student object with that id
+						ex  546			--> all data of Student 546 in object form
+
+b) create implementation of this method in StudentDao.java
+	b.1) create getStudent(int student Id)
+	b.2) create query
+	b.3) call queryForObject(query, rowMapper, studentId)
+			input: query, rowMapper, studentId
+	b.4) create another class in com.spring.jdbc.dao -> New -> Class : RowMapperImpl //Finish
+ 		Class implements RowMapper<T> {} (//from org.spring.framework .jdbc.core)
+
+		public class RowMapperImpl implements RowMapper<Student>
+
+		why implement? specify which type of object we working with?
+
+	b.5) Add unimplemented`methods in RowMapperImpl.java		//mapRow()
+ 		b.5.1) create student object of type Student
+		b.5.2) How to take out data from student object
+		b.5.3) pass resultSetId in setId()
+					how to find resultSetId? getInt(1) //first col in database is id
+				student.setId(rs.getInt(1))
+
+		b.5.4) setName()
+		b.5.5) setCity()
+			student.setName(rs.getString(2));
+			student.setCity(rs.getString(3));
+		b.5.2) return student
+		
+		//java will use the above 
+
+
+	b.6) In StudentDaoImpl.java
+		store child class object RowMapperImpl() in parent class RowMapper <> rowMapper
+		//Create RowMapper object
+			
+		//RowMapper<Student> rowMapper=  new RowMapperImpl();
+		Student student this.jdbcTemplate.queryForObject(query, rowMapper, studentId);
+
+
+	b.7) in App.java
+		Student student = studentDao.getStudent(222);
+		System.out.println(student);
+	
+	//What flow? App.java -> getStudent(222) ->getStudent(int studentId) //StudentDao.java interface -> getStudent() //StudentDaoImpl.java 
+
+	--> query created --> create RowMapper object  //(cant create direct object since interface, have to create implementation class RowMapperImpl where we create new student object and set all data from resultSet -->	
+	--> create RowMapperImpl() --> call queryForObject  from jdbcTemplate  //pass input: query, rowMapper, studentId
+
+	--> final output: student object		//this object will be returned
+
+	print this student object
+
+
+
+
+	b.8)>Output
+	My Program started ......
+	Student [id=222, name=Durgesh Tiwari, city=Delhi]
+	//Successfully fetched data for id = 222
+
+	//Normal JDBC too much code --> Spring jdbc less code
+
+
+
+	b.9) 
+
+	//Note: What if we want to avoid using RowMapperImpl.java  //In StudentDaoImpl.java
+	Soln: Create anonymous class
+->
+	Student student = this.jdbcTemplate.queryForObject(query, new RowMapper(){
+
+	public Object mapRow(ResultSet rs; int rowNum) throws SQLException {
+	Student student = new Student();
+	student.setId(rs.getInt(1)); I
+	student.setName(rs.getString(2));
+	student.setCity(rs.getString(3))fl
+	return student;
+
+}
+
+}, studentId);
+
+
+	//What flaw? separately write for every select statement
+	
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+1) StudentDao.java
+
+package com.spring.jdbc.dao;
+import com.spring.jdbc.entites.Student;
+
+public interface StudentDao {
+	public int insert(Student student);
+	public int change(Student student);
+	public int delete(int studentId); 
+	public Student getStudent(int studentId);
+	
+} 
+ 
+
+2) StudentDapImpl.java
+
+
+package com.spring.jdbc.dao; 
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.spring.jdbc.entites.Student;
+public class StudentDaoIle implements StudentDao {
+private JdbcTemplate jdbcTemplate;
+public int insert(Student student) {
+
+
+// insert query
+String query = "insert into student(id,name,city) values(?,?,?)";
+int r = this.jdbcTemplate.update(query, student.getId(), student.getName(), student
+return r;
+}
+public int change(Student student) {
+// updating data
+String query = "update student set name=? , city=? where id=?";
+int r = this.jdbcTemplate.update(query, student.getName(), student.getCity(), stude
+return r;
+}
+
+
+public int delete(int studentId) {
+	String query= "delete from student where id = ?";
+	int r = this.jdbcTemplate.update(query,studentId);			//studentId will inject into query
+	return r;
+}
+
+public Student getStudent(int studentId) {
+	String  query = "select * from student where id=?";
+	RowMapper<Student> rowMapper=  new RowMapperImpl();
+	Student student this.jdbcTemplate.queryForObject(query, rowMapper, studentId);
+	return student;
+}
+
+public JdbcTemplate getJdbcTemplate() {
+	return jdbcTemplate;
+}
+
+public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+	this.jdbcTemplate = jdbcTemplate;
+}
+
+
+3) RowMapperImpl.java
+
+package com.spring.jdbc.dao;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
+import com.spring.jdbc.entites.Student;
+
+public class RowMapperImpl implements RowMapper<Student> {
+
+public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+	Student student = new Student();
+	student.setId(rs.getInt(1));
+
+	student.setName(rs.getString(2));
+	student.setCity(rs.getString(3));
+	
+	return student;
+}
+}
+
+
+4)
+//App.java
+
+paCKage com.spring.jdbc;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.spring.jdbc.dao.StudentDao;
+import com.spring.jdbc.entites.Student;
+
+public class App {
+
+	public static void main(String[] args) {
+	System.out.println("My Program started.........");
+	// Spring JdbC=> JdbcTemPlate
+
+	ApplicationContext context = new ClassPatthlApplicationContext("com/spring/jdbc/co
+
+	StudentDao studentDao = context.getBean("studentDao",StudentDao.class);
+
+/*	INSERT
+	Student student=new Student();
+	student.setId(666);
+	student.setName("John");	
+	student.setCity("Lucknow");
+	int result = studentDao.insert(student);
+
+	System.out.println("student added "+result); 
+*/	
+/*	UPDATE
+	Student student = new Student();
+	student.setId(245);
+	student.setName("Raj kumar");
+	student.setCity("Lucknow");
+	int result = studentDao.change(student);
+	System.out.println("data changed" +result);
+
+*/
+/*
+	//DELETE
+	int result = studentDao.delete(666);
+	System.out.println("deleted" +result);
+*/
+	Student student = studentDao.getStudent(222);
+	System.out.println(student);
+
+}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PRACTICAL 
+
+SELECT Multiple object
+
+
+a) Add another method getAllStudents() in StudentDao.java  //no parameter needed since fething all objects
+
+b) Implement in StudentDaoImpl.java
+	getAllStudents()
+	store query
+	pass query , RowMapperImpl(), parameters if any : in query() of jdbcTemplate
+	Store in List of Student (students)
+	return students;
+
+c) call in App.js
+	student.getAllStudents();
+	store all objects in List
+	traverse the list  using for loop
+
+	//We get all students
+	My Program started.........
+		Student [id=222, name=Durgesh Tiwari, city=Delhi]
+		Student [id=456, name=Uttam Kumar, city=Kanpur]
+
+	
+
+1) StudentDao.java
+
+package com.spring.jdbc.dao;
+import com.spring.jdbc.entites.Student;
+
+public interface StudentDao {
+	public int insert(Student student);
+	public int change(Student student);
+	public int delete(int studentId); 
+	public Student getStudent(int studentId);
+
+	public List<Student> getAllStudents();
+	
+	
+} 
+
+
+2) StudentDaoImpl.java
+ 
+
+
+package com.spring.jdbc.dao; 
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.spring.jdbc.entites.Student;
+public class StudentDaoIle implements StudentDao {
+private JdbcTemplate jdbcTemplate;
+public int insert(Student student) {
+
+
+// insert query
+String query = "insert into student(id,name,city) values(?,?,?)";
+int r = this.jdbcTemplate.update(query, student.getId(), student.getName(), student
+return r;
+}
+public int change(Studeht student) {
+// updating data
+String query = "update student set name=? , city=? where id=?";
+int r = this.jdbcTemplate.update(query, student.getName(), student.getCity(), stude
+return r;
+}
+
+
+public int delete(int studnetId) {
+	String query= "delete from student where id = ?";
+	int r = this.jdbcTemplate.update(query,studentId);			//studentId will inject into query
+	return r;
+}
+
+public Student getStudent(int studentId) {
+// select single student data
+	String query = "select * from student where id=?";
+	RowMapper<Student> rowMapper = new RowMapperImp1();
+	Student student = this.jdbcTemplate.queryForObject(query, rowMapper, studentId]
+	
+	return student;
+}
+public JdbcTemplate getJdbcTemplate() {
+	return jdbcTemplate;
+}
+public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+	this.jdbcTemplate = jdbcTemplate;
+}
+
+public List<Student> getAllStudents() {
+	String query = "select * from student";
+	this.jdbcTemplate.query(query, new RowMapperImpl());
+	return students;
+
+}
+
+
+3) RowMapperImpl.java
+
+package com.spring.jdbc.dao;
+
+import java.sql.ResultSet3:
+
+public class RowMapperImpl implements RowMapper<Student> {
+
+	public Student mapRow(ResultSet rs, int rowNum) throws SQLException
+		Student student = new Student();
+		student.setId(rs.getInt(1));
+		student.setName(rs.getString(2));
+		student.setCity(rs.getString(3));
+		return student;
+
+}
+}
+
+
+4) App.java
+
+
+package com.spring.jdbc;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.spring.jdbc.dao.StudentDao;
+import com.spring.jdbc.entites.Student;
+
+public class App {
+
+	public static void main(String[] args) {
+	System.out.println("My Program started.........");
+	// Spring JdbC=> JdbcTemPlate
+
+	ApplicationContext context = new ClassPatthlApplicationContext("com/spring/jdbc/co
+
+	StudentDao studentDao = context.getBean("studentDao",StudentDao.class);
+
+/*	INSERT
+	Student student=new Student();
+	student.setId(666);
+	student.setName("John");	
+	student.setCity("Lucknow");
+	int result = studentDao.insert(student);
+
+	System.out.println("student added "+result); 
+*/	
+/*	UPDATE
+	Student student = new Student();
+	student.setId(245);
+	student.setName("Raj kumar");
+	student.setCity("Lucknow");
+	int result = studentDao.change(student);
+	System.out.println("data changed" +result);
+
+*/
+	//DELETE
+	int result = studentDao.delete(666);
+	System.out.println("deleted" +result);
+*/
+
+	List<Student> students =  studentDao.getAllStudents();
+	for(Student s: students) {
+		System.out.println(s);
+	}
+
+
+

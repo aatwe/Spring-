@@ -1,0 +1,129 @@
+Objective: Update data using Spring JDBC class JdbcTemplate
+
+What done?
+a) created interface with insert()
+	method implementation in Implementation class: StudentDaoImpl.java
+
+1) How to update data?
+	create change() in StudentDao.java 
+	takes arg student object of Student type	 
+
+		create id,create city, create name
+		//id = what to update			//have to fetch
+		//city = with what city
+		//name = with what name
+
+	
+
+2) How to implement interface StudentDao in StudentDaoImpl.java
+Override  insert() in StudentDaoImpl
+Override  change() in StudentDaoImpl
+
+3) In change()
+	create and store query = update set name = ?, city = ? where id= ?
+	
+//How will we update? use update() from jdbcTemplate
+
+	this.jdbcTemplate.update(query, student.getName(), student.getCity(), student.getId());
+		//name and city are col in database
+	return 0;
+	
+	
+
+
+4) for ex change Manish Kumar (name) --> Rajesh
+			 Kanpur		    --> Lucknow 
+
+	In App.java
+	Use setId, setName(), setCity()
+
+	
+
+5) Check database
+	changed to : Raj Kumar and Lucknow
+
+
+--------------------------------------------------------------------------------------
+App.java
+
+paCKage com.spring.jdbc;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPatthlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.spring.jdbc.dao.StudentDao;
+import com.spring.jdbc.entites.Student;
+
+public class App {
+
+	public static void main(String[] args) {
+	System.out.println("My Program started.........");
+	// Spring JdbC=> JdbcTemPlate
+
+	ApplicationContext context = new ClassPatthlApplicationContext("com/spring/jdbc/co
+
+	StudentDao studentDao = context.getBean("studentDao",StudentDao.class);
+
+/*	
+	Student student=new Student();
+	student.setId(666);
+	student.setName("John");	
+	student.setCity("Lucknow");
+	int result = studentDao.insert(student);
+
+	System.out.println("student added "+result); 
+*/	
+
+	Student student = new Student();
+	student.setId(245);
+	student.setName("Raj kumar");
+	student.setCity("Lucknow");
+	int result = studentDao.change(student);
+	System.out.println("data changed" +result);
+
+
+StudentDao.java	//interface
+
+package com.spring.jdbc.dao;
+import com.spring.jdbc.entites.Student;
+
+public interface StudentDao {
+public int insert (Student student);
+
+public int change(Student student) {
+	 
+}
+
+}
+
+
+-----------------------------------------------------------------------------------
+
+StudentDaoImpl.java
+
+package com.spring.jdbc.dao;
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.spring.jdbc.entites.Student;
+public class StudentDaoImpl implements StudentDao {
+private JdbcTemplate jdbcTemplate;
+
+public int insert(Student student) {
+// insert query
+	String query = "insert into student(id,name,city) values(?,?,?)";
+	int r = this.jdbcTemplate.update(query, student.getId(), student.getName(), student.getCity));
+	return r;
+}
+
+
+public int change(Student student) {	
+	String query ="update student set name=?, city=? where id = ?";
+	int r = this.jdbcTemplate.update(query,student.getName(),student.getCity,student.getId());
+	return r;
+}
+
+public JdbcTemplate getJdbcTemplate() {
+	return jdbcTemplate;
+}
+public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+	this.jdbcTemplate = jdbcTemplate;
+}
+}
